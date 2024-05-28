@@ -1,0 +1,5 @@
+{
+    "files.readonlyInclude": {
+        "**/pb/types.ts": true
+    }
+}

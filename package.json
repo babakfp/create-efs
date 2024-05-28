@@ -1,0 +1,33 @@
+{
+    "name": "create-efs",
+    "description": "A CLI tool to create EFS apps.",
+    "version": "0.0.18",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "bin": "./dist/index.js",
+    "scripts": {
+        "dev": "tsc -w",
+        "build": "tsc",
+        "prepublishOnly": "tsc",
+        "format": "prettier -w ."
+    },
+    "dependencies": {
+        "@clack/prompts": "0.7.0",
+        "@inquirer/prompts": "5.0.5",
+        "commander": "12.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "20.12.12",
+        "prettier": "3.2.5",
+        "typescript": "5.4.5"
+    },
+    "files": [
+        "./dist/",
+        "./templates/"
+    ],
+    "exports": {
+        ".": "./dist/index.js"
+    },
+    "keywords": [],
+    "type": "module"
+}
