@@ -264,7 +264,7 @@ if (prompts.template === "with-database") {
 
         const content =
             [
-                `${envPublicPrefix}PB_URL="${defaultUrlContent}" # Used to connecto to DB and PocketBase type generation CLI`,
+                `${envPublicPrefix}PB_URL="${defaultUrlContent}" # Used to connect to DB and PocketBase type generation CLI`,
                 `PB_EMAIL="" # Used for PocketBase type generation CLI`,
                 `PB_PASSWORD="" # Used for PocketBase type generation CLI`,
             ].join("\n") + "\n"
