@@ -319,6 +319,7 @@ if (prompts.template === "with-database") {
         })
 
         try {
+            console.log("Downloading...")
             await downloader.download()
         } catch (error) {
             console.log(
@@ -334,6 +335,21 @@ if (prompts.template === "with-database") {
         await zip.close()
 
         await rm(join(projectPath, "storage", selectedAsset))
+
+        const dockerfileContent = await readFile(
+            join(projectPath, "storage", "Dockerfile"),
+            {
+                encoding: "utf-8",
+            },
+        )
+
+        await writeFile(
+            join(projectPath, "storage", "Dockerfile"),
+            dockerfileContent.replace(
+                "ARG PB_VERSION=0.22.12",
+                `ARG PB_VERSION=${selectedAsset.split("_")[1]}`,
+            ),
+        )
     }
 
     // --- PocketBase Type Generation
