@@ -224,7 +224,7 @@ await cp(join(rootPath, "templates", "SvelteKit"), projectClientPath, {
     recursive: true,
 })
 
-// I needed to prefix these files because they were being ignored by the NPM registery.
+// I needed to prefix these files because they were being ignored by the NPM registry.
 // https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 
 await rename(
