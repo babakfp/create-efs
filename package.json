@@ -14,7 +14,9 @@
     "dependencies": {
         "@clack/prompts": "0.7.0",
         "@inquirer/prompts": "5.0.6",
-        "commander": "12.1.0"
+        "commander": "12.1.0",
+        "node-stream-zip": "^1.15.0",
+        "nodejs-file-downloader": "^4.13.0"
     },
     "devDependencies": {
         "@types/node": "20.14.8",

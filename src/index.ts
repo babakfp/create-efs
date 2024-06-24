@@ -12,7 +12,16 @@ import { existsSync } from "node:fs"
 import { execSync } from "node:child_process"
 import { input, select, confirm } from "@inquirer/prompts"
 import { Option, program } from "commander"
+import { Downloader } from "nodejs-file-downloader"
+import StreamZip from "node-stream-zip"
+import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import pkg from "../package.json" with { type: "json" }
+
+const isRunningFromNpmRegistry = process.env.npm_config_user_agent
+
+const rootPath = isRunningFromNpmRegistry
+    ? join(import.meta.dirname, "..")
+    : process.cwd()
 
 program
     .name(pkg.name)
@@ -211,11 +220,9 @@ const projectClientPath =
         ? projectPath
         : join(projectPath, "client")
 
-await cp(
-    join(import.meta.dirname, "..", "templates", "SvelteKit"),
-    projectClientPath,
-    { recursive: true },
-)
+await cp(join(rootPath, "templates", "SvelteKit"), projectClientPath, {
+    recursive: true,
+})
 
 // I needed to prefix these files because they were being ignored by the NPM registery.
 // https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
@@ -249,7 +256,7 @@ if (prompts.template === "with-database") {
 
 if (prompts.template === "with-database") {
     await cp(
-        join(import.meta.dirname, "..", "templates", "PocketBase Client"),
+        join(rootPath, "templates", "PocketBase Client"),
         projectClientPath,
         { recursive: true },
     )
@@ -284,11 +291,50 @@ if (prompts.template === "with-database") {
 
     // --- PocketBase
 
-    await cp(
-        join(import.meta.dirname, "..", "templates", "PocketBase"),
-        projectPath,
-        { recursive: true },
-    )
+    await cp(join(rootPath, "templates", "PocketBase"), projectPath, {
+        recursive: true,
+    })
+
+    // --- Download PocketBase Executable
+
+    const assets = await getLatestReleaseAssets()
+
+    if (assets.length) {
+        const selectedAsset = await select({
+            message: "Choose an Asset",
+            choices: assets.map((asset) => ({
+                name: asset.name,
+                value: asset.name,
+            })),
+            theme: { icon: { cursor: "|" } },
+        })
+
+        const downloadUrl = assets.filter(
+            (asset) => asset.name === selectedAsset,
+        )[0].downloadUrl
+
+        const downloader = new Downloader({
+            url: downloadUrl,
+            directory: join(projectPath, "storage"),
+        })
+
+        try {
+            await downloader.download()
+        } catch (error) {
+            console.log(
+                "Download failed. Download it yourself https://github.com/pocketbase/pocketbase/releases/latest",
+                error,
+            )
+        }
+
+        const zip = new StreamZip.async({
+            file: join(projectPath, "storage", selectedAsset),
+        })
+        await zip.extract(null, join(projectPath, "storage"))
+        await zip.close()
+
+        await rm(join(projectPath, "storage", selectedAsset))
+    }
 
     // --- PocketBase Type Generation
 
