@@ -17,7 +17,7 @@ import StreamZip from "node-stream-zip"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import pkg from "../package.json" with { type: "json" }
 
-const isRunningFromNpmRegistry = process.env.npm_config_user_agent
+const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
 const rootPath = isRunningFromNpmRegistry
     ? join(import.meta.dirname, "..")
