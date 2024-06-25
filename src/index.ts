@@ -111,7 +111,7 @@ if (cliOptions.name) {
         cancel("Operation cancelled!")
         process.exit()
     } else {
-        prompts.name = name
+        prompts.name = name ?? ""
     }
 }
 
