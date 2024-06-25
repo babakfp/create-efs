@@ -1,59 +1,38 @@
 # Easy Full Stack
 
--   Svelte
--   SvelteKit
--   PocketBase
--   TailwindCSS
--   SQLite
+-   Client
+    -   [Svelte](https://svelte.dev)
+    -   [SvelteKit](https://kit.svelte.dev)
+    -   [TailwindCSS](https://tailwindcss.com)
+    -   [Prettier](https://prettier.io)
+        -   [Svelte Plugin](https://github.com/sveltejs/prettier-plugin-svelte)
+        -   [TailwindCSS Plugin](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
+        -   [Sort Imports](https://github.com/IanVS/prettier-plugin-sort-imports)
+-   Storage
+    -   [PocketBase](https://pocketbase.io)
+    -   [SQLite](https://www.sqlite.org)
 
--   FullStack
--   -   Prettier
--   -   -   Import formatter
--   -   -   TailwindCSS formatter
--   -   -   Svelte formatter
--   -   TailwindCSS
--   Only FrontEnd
--   -   Prettier
--   -   -   Import formatter
--   -   -   TailwindCSS formatter
--   -   -   Svelte formatter
--   -   TailwindCSS
+## Todo
 
-Rnadom cute project names and favicons
+-   Random cute project names and favicons.
+-   Maybe a function for `svelte.config.js` to disable some warnings. Example:
 
----
+    ```js
+    {
+        onwarn: (warning, handler) => {
+            if (
+                warning.code.startsWith("a11y-") ||
+                warning.code === "avoid-mouse-events-on-document"
+            )
+                return
+            handler(warning)
+        },
+    }
+    ```
 
-todo
-data-sveltekit-preload-data="hover" or ...
-
-TOOD
-
-```json
-importOrder: ["^@", "^[^$\\.\\/]", "^\\$", "^\\.\\.", "^\\."],
-importOrderSortSpecifiers: true,
-```
-
----
-
-A function for `svelte.config.js` to disable some wornings. Example:
-
-```js
-{
-       onwarn: (warning, handler) => {
-        if (
-            warning.code.startsWith("a11y-") ||
-            warning.code === "avoid-mouse-events-on-document"
-        )
-            return
-        handler(warning)
-    },
-}
-```
-
-A section about vsCode extensions in the `README.md` file.
-
-A section about commands and packages and etc. Everything...
-
-A section about fontsource site.
-
-A section about user auth in `hooks.server.ts` and etc.
+-   vsCode extensions
+-   vsCode config
+-   A section about vsCode extensions in the `README.md` file.
+-   A section about commands and packages and etc. Everything...
+-   A section about font source site.
+-   A section about user auth in `hooks.server.ts` and etc.
