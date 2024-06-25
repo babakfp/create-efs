@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@clack/prompts": "0.7.0",
-        "@inquirer/prompts": "5.0.6",
         "cli-spinners": "^3.0.0",
         "commander": "12.1.0",
         "loading-cli": "^1.1.2",

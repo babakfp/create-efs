@@ -10,12 +10,20 @@ import {
 } from "node:fs/promises"
 import { existsSync } from "node:fs"
 import { execSync } from "node:child_process"
-import { input, select, confirm } from "@inquirer/prompts"
 import { Option, program } from "commander"
 import { Downloader } from "nodejs-file-downloader"
-import StreamZip from "node-stream-zip"
-import loading from "loading-cli"
-import cliSpinners from "cli-spinners"
+import { unZip } from "./lib/unZip.js"
+import { createSpinner } from "./lib/spinner.js"
+import { editFile } from "./lib/editFile.js"
+import {
+    intro,
+    outro,
+    text,
+    select,
+    confirm,
+    isCancel,
+    cancel,
+} from "@clack/prompts"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import pkg from "../package.json" with { type: "json" }
 
@@ -34,7 +42,6 @@ program
     .addOption(
         new Option("--directory-not-empty [directory-not-empty]").choices([
             "exit",
-            "ignore",
             "delete",
         ]),
     )
@@ -62,7 +69,7 @@ program
 
 const cliOptions = program.opts<{
     name?: string
-    directoryNotEmpty?: "exit" | "ignore" | "delete"
+    directoryNotEmpty?: "exit" | "delete"
     template?: "no-database" | "with-database"
     realtime?: boolean
     adapter?: "auto" | "node" | "static" | "vercel" | "netlify"
@@ -86,13 +93,26 @@ const ADAPTER_VERSIONS = {
     "@sveltejs/adapter-netlify": "4.2.0",
 }
 
+// Extra spacing
+console.log()
+console.log()
+
+intro("Welcome!")
+
 if (cliOptions.name) {
     prompts.name = cliOptions.name
 } else {
-    prompts.name = await input({
+    const name = await text({
         message: "Name / Path",
-        default: "easy-stack-app",
+        placeholder: "Hit Enter to use the current directory!",
     })
+
+    if (isCancel(name)) {
+        cancel("Operation cancelled!")
+        process.exit()
+    } else {
+        prompts.name = name
+    }
 }
 
 prompts.name = prompts.name.trim()
@@ -110,38 +130,40 @@ if (existsSync(projectPath)) {
         if (cliOptions.directoryNotEmpty) {
             prompts.directoryNotEmpty = cliOptions.directoryNotEmpty
         } else {
-            prompts.directoryNotEmpty = await select({
+            const directoryNotEmpty = (await select({
                 message: "Directory NOT Empty",
-                choices: [
+                options: [
                     {
-                        name: "Exit",
+                        label: "Exit",
                         value: "exit",
                     },
                     {
-                        name: "Ignore",
-                        value: "ignore",
-                    },
-                    {
-                        name: "Delete All",
+                        label: "Delete",
                         value: "delete",
                     },
                 ],
-                theme: { icon: { cursor: "|" } },
-            })
+            })) as "exit" | "delete"
+
+            if (isCancel(directoryNotEmpty)) {
+                cancel("Operation cancelled!")
+                process.exit()
+            } else {
+                prompts.directoryNotEmpty = directoryNotEmpty
+            }
         }
 
         if (prompts.directoryNotEmpty === "exit") {
-            console.log("Exiting without creating a project.")
+            cancel("Exiting without creating a project!")
             process.exit()
         }
 
         if (prompts.directoryNotEmpty === "delete") {
-            console.log(
-                "Deleting all files and folders in the current directory.",
-            )
+            const deleteSpinner = createSpinner("Deleting!").start()
 
             await rm(projectPath, { recursive: true })
             await mkdir(projectPath)
+
+            deleteSpinner.stop()
         }
     }
 }
@@ -149,30 +171,43 @@ if (existsSync(projectPath)) {
 if (cliOptions.template) {
     prompts.template = cliOptions.template
 } else {
-    prompts.template = await select({
+    const template = (await select({
         message: "Template",
-        choices: [
+        options: [
             {
-                name: "No Database",
+                label: "No Database",
                 value: "no-database",
             },
             {
-                name: "With Database",
+                label: "With Database",
                 value: "with-database",
             },
         ],
-        theme: { icon: { cursor: "|" } },
-    })
+    })) as "no-database" | "with-database"
+
+    if (isCancel(template)) {
+        cancel("Operation cancelled!")
+        process.exit()
+    } else {
+        prompts.template = template
+    }
 }
 
 if (prompts.template === "with-database") {
     if (cliOptions.realtime !== undefined) {
         prompts.realtime = cliOptions.realtime
     } else {
-        prompts.realtime = await confirm({
+        const realtime = await confirm({
             message: "Will you use real-time database features?",
-            default: prompts.realtime,
+            initialValue: prompts.realtime,
         })
+
+        if (isCancel(realtime)) {
+            cancel("Operation cancelled!")
+            process.exit()
+        } else {
+            prompts.realtime = realtime
+        }
     }
 }
 
@@ -187,32 +222,43 @@ if (cliOptions.adapter) {
 
     prompts.adapter = mapCliAdapterToPromptAdapter[cliOptions.adapter]
 } else {
-    prompts.adapter = await select({
+    const adapter = (await select({
         message: "Adapter",
-        choices: [
+        options: [
             {
-                name: "Auto",
+                label: "Auto",
                 value: "@sveltejs/adapter-auto",
             },
             {
-                name: "Node",
+                label: "Node",
                 value: "@sveltejs/adapter-node",
             },
             {
-                name: "Static",
+                label: "Static",
                 value: "@sveltejs/adapter-static",
             },
             {
-                name: "Vercel",
+                label: "Vercel",
                 value: "@sveltejs/adapter-vercel",
             },
             {
-                name: "Netlify",
+                label: "Netlify",
                 value: "@sveltejs/adapter-netlify",
             },
         ],
-        theme: { icon: { cursor: "|" } },
-    })
+    })) as
+        | "@sveltejs/adapter-auto"
+        | "@sveltejs/adapter-node"
+        | "@sveltejs/adapter-static"
+        | "@sveltejs/adapter-vercel"
+        | "@sveltejs/adapter-netlify"
+
+    if (isCancel(adapter)) {
+        cancel("Operation cancelled!")
+        process.exit()
+    } else {
+        prompts.adapter = adapter
+    }
 }
 
 // Copy SvelteKit template
@@ -302,14 +348,18 @@ if (prompts.template === "with-database") {
     const assets = await getLatestReleaseAssets()
 
     if (assets.length) {
-        const selectedAsset = await select({
+        const selectedAsset = (await select({
             message: "Choose an Asset",
-            choices: assets.map((asset) => ({
-                name: asset.name,
+            options: assets.map((asset) => ({
+                label: asset.name,
                 value: asset.name,
             })),
-            theme: { icon: { cursor: "|" } },
-        })
+        })) as string
+
+        if (isCancel(selectedAsset)) {
+            cancel("Operation cancelled!")
+            process.exit()
+        }
 
         const downloadUrl = assets.filter(
             (asset) => asset.name === selectedAsset,
@@ -320,10 +370,9 @@ if (prompts.template === "with-database") {
             directory: join(projectPath, "storage"),
         })
 
-        const downloadSpinner = loading({
-            text: "Downloading PocketBase executable!",
-            ...cliSpinners.dots,
-        })
+        const downloadSpinner = createSpinner(
+            "Downloading PocketBase executable!",
+        )
 
         try {
             downloadSpinner.start()
@@ -340,24 +389,10 @@ if (prompts.template === "with-database") {
             )
         }
 
-        const zip = new StreamZip.async({
-            file: join(projectPath, "storage", selectedAsset),
-        })
-        await zip.extract(null, join(projectPath, "storage"))
-        await zip.close()
+        await unZip(join(projectPath, "storage", selectedAsset))
 
-        await rm(join(projectPath, "storage", selectedAsset))
-
-        const dockerfileContent = await readFile(
-            join(projectPath, "storage", "Dockerfile"),
-            {
-                encoding: "utf-8",
-            },
-        )
-
-        await writeFile(
-            join(projectPath, "storage", "Dockerfile"),
-            dockerfileContent.replace(
+        await editFile(join(projectPath, "storage", "Dockerfile"), (content) =>
+            content.replace(
                 "ARG PB_VERSION=0.22.12",
                 `ARG PB_VERSION=${selectedAsset.split("_")[1]}`,
             ),
@@ -463,10 +498,17 @@ if (prompts.adapter !== "@sveltejs/adapter-auto") {
 if (cliOptions.install !== undefined) {
     prompts.install = cliOptions.install
 } else {
-    prompts.install = await confirm({
+    const install = await confirm({
         message: "Install Dependencies",
-        default: prompts.install,
+        initialValue: prompts.install,
     })
+
+    if (isCancel(install)) {
+        cancel("Operation cancelled!")
+        process.exit()
+    } else {
+        prompts.install = install
+    }
 }
 
 if (prompts.install) {
@@ -476,3 +518,5 @@ if (prompts.install) {
 
     execSync(command)
 }
+
+outro("Your app is ready!")
