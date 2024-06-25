@@ -1,5 +1,9 @@
 # Easy Full Stack
 
+```bash
+pnpm create efs@latest
+```
+
 -   Client
     -   [Svelte](https://svelte.dev)
     -   [SvelteKit](https://kit.svelte.dev)
