@@ -14,6 +14,8 @@ import { input, select, confirm } from "@inquirer/prompts"
 import { Option, program } from "commander"
 import { Downloader } from "nodejs-file-downloader"
 import StreamZip from "node-stream-zip"
+import loading from "loading-cli"
+import cliSpinners from "cli-spinners"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import pkg from "../package.json" with { type: "json" }
 
@@ -318,10 +320,20 @@ if (prompts.template === "with-database") {
             directory: join(projectPath, "storage"),
         })
 
+        const downloadSpinner = loading({
+            text: "Downloading PocketBase executable!",
+            ...cliSpinners.dots,
+        })
+
         try {
-            console.log("Downloading...")
+            downloadSpinner.start()
+
             await downloader.download()
+
+            downloadSpinner.stop()
         } catch (error) {
+            downloadSpinner.stop()
+
             console.log(
                 "Download failed. Download it yourself https://github.com/pocketbase/pocketbase/releases/latest",
                 error,
