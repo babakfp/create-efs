@@ -30,7 +30,7 @@ import pkg from "../package.json" with { type: "json" }
 const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
 const rootPath = isRunningFromNpmRegistry
-    ? join(import.meta.dirname, "..")
+    ? join(import.meta.dirname, "../..")
     : process.cwd()
 
 program
