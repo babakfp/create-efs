@@ -310,7 +310,7 @@ if (
 
     const newContent = oldContent.replace(
         "/.svelte-kit/",
-        ["/.svelte-kit/", "/.env", "/.env.*", "/!.env.example"].join("\n"),
+        ["/.svelte-kit/", "/.env", "/.env.*", "!/.env.example"].join("\n"),
     )
 
     await writeFile(path, newContent)
