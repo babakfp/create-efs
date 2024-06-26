@@ -83,6 +83,7 @@ const prompts = {
     realtime: false,
     adapter: "",
     install: true,
+    environmentVariables: true,
 }
 
 const ADAPTER_VERSIONS = {
@@ -193,6 +194,20 @@ if (cliOptions.template) {
     }
 }
 
+if (prompts.template === "no-database") {
+    const environmentVariables = await confirm({
+        message: "Are you going to use Environment Variables?",
+        initialValue: prompts.environmentVariables,
+    })
+
+    if (isCancel(environmentVariables)) {
+        cancel("Operation cancelled!")
+        process.exit()
+    } else {
+        prompts.environmentVariables = environmentVariables
+    }
+}
+
 if (prompts.template === "with-database") {
     if (cliOptions.realtime !== undefined) {
         prompts.realtime = cliOptions.realtime
@@ -284,22 +299,26 @@ await rename(
     join(projectClientPath, ".npmrc"),
 )
 
-if (prompts.template === "with-database") {
-    const updateGitIgnoreFile = async () => {
-        const path = join(projectClientPath, ".gitignore")
-        const oldContent = await readFile(path, {
-            encoding: "utf-8",
-        })
+if (
+    prompts.template === "with-database" ||
+    (prompts.template === "no-database" && prompts.environmentVariables)
+) {
+    const path = join(projectClientPath, ".gitignore")
+    const oldContent = await readFile(path, {
+        encoding: "utf-8",
+    })
 
-        const newContent = oldContent.replace(
-            "/.svelte-kit/",
-            ["/.svelte-kit/", "/.env", "/.env.*", "/!.env.example"].join("\n"),
-        )
+    const newContent = oldContent.replace(
+        "/.svelte-kit/",
+        ["/.svelte-kit/", "/.env", "/.env.*", "/!.env.example"].join("\n"),
+    )
 
-        await writeFile(path, newContent)
-    }
+    await writeFile(path, newContent)
+}
 
-    updateGitIgnoreFile()
+if (prompts.template === "no-database" && prompts.environmentVariables) {
+    await writeFile(join(projectClientPath, ".env"), "")
+    await writeFile(join(projectClientPath, ".env.example"), "")
 }
 
 if (prompts.template === "with-database") {
