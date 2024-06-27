@@ -21,7 +21,6 @@ import {
     spinner,
     text,
 } from "@clack/prompts"
-import { Option, program } from "commander"
 import { Downloader } from "nodejs-file-downloader"
 import { editFile } from "./lib/editFile.js"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
@@ -34,55 +33,6 @@ const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 const rootPath = isRunningFromNpmRegistry
     ? join(import.meta.dirname, "..")
     : process.cwd()
-
-const packageJson = JSON.parse(
-    await readFile(join(rootPath, "package.json"), { encoding: "utf-8" }),
-)
-
-program
-    .name(packageJson.name)
-    .description(packageJson.description)
-    .version(packageJson.version, "-v, --version")
-
-    .option("--name [name]")
-    .addOption(
-        new Option("--directory-not-empty [directory-not-empty]").choices([
-            "exit",
-            "delete",
-        ]),
-    )
-    .addOption(
-        new Option("--template [template]").choices([
-            "no-database",
-            "with-database",
-        ]),
-    )
-    .option("--realtime")
-    .addOption(
-        new Option("--adapter [adapter]").choices([
-            "auto",
-            "node",
-            "static",
-            "vercel",
-            "netlify",
-        ]),
-    )
-    .option("--install")
-    .option("--git")
-
-    .helpOption("-h, --help", "Display help for command.")
-
-    .parse()
-
-const cliOptions = program.opts<{
-    name?: string
-    directoryNotEmpty?: "exit" | "delete"
-    template?: "no-database" | "with-database"
-    realtime?: boolean
-    adapter?: "auto" | "node" | "static" | "vercel" | "netlify"
-    install?: boolean
-    git?: boolean
-}>()
 
 const prompts = {
     name: "",
@@ -106,20 +56,16 @@ const ADAPTER_VERSIONS = {
 console.log()
 intro("Welcome")
 
-if (cliOptions.name) {
-    prompts.name = cliOptions.name
-} else {
-    const name = await text({
-        message: "Name / Path",
-        placeholder: "Hit Enter to use the current directory.",
-    })
+const name = await text({
+    message: "Name / Path",
+    placeholder: "Hit Enter to use the current directory.",
+})
 
-    if (isCancel(name)) {
-        cancel("Cancelled.")
-        process.exit()
-    } else {
-        prompts.name = name ?? ""
-    }
+if (isCancel(name)) {
+    cancel("Cancelled.")
+    process.exit()
+} else {
+    prompts.name = name ?? ""
 }
 
 prompts.name = prompts.name.trim()
@@ -130,29 +76,25 @@ if (existsSync(projectPath)) {
     const projectDirFiles = await readdir(projectPath)
 
     if (projectDirFiles.length) {
-        if (cliOptions.directoryNotEmpty) {
-            prompts.directoryNotEmpty = cliOptions.directoryNotEmpty
-        } else {
-            const directoryNotEmpty = (await select({
-                message: "Directory Not Empty",
-                options: [
-                    {
-                        label: "Exit",
-                        value: "exit",
-                    },
-                    {
-                        label: "Delete!",
-                        value: "delete",
-                    },
-                ],
-            })) as "exit" | "delete"
+        const directoryNotEmpty = (await select({
+            message: "Directory Not Empty",
+            options: [
+                {
+                    label: "Exit",
+                    value: "exit",
+                },
+                {
+                    label: "Delete!",
+                    value: "delete",
+                },
+            ],
+        })) as "exit" | "delete"
 
-            if (isCancel(directoryNotEmpty)) {
-                cancel("Cancelled.")
-                process.exit()
-            } else {
-                prompts.directoryNotEmpty = directoryNotEmpty
-            }
+        if (isCancel(directoryNotEmpty)) {
+            cancel("Cancelled.")
+            process.exit()
+        } else {
+            prompts.directoryNotEmpty = directoryNotEmpty
         }
 
         if (prompts.directoryNotEmpty === "exit") {
@@ -172,29 +114,25 @@ if (existsSync(projectPath)) {
     }
 }
 
-if (cliOptions.template) {
-    prompts.template = cliOptions.template
-} else {
-    const template = (await select({
-        message: "Template",
-        options: [
-            {
-                label: "No Database",
-                value: "no-database",
-            },
-            {
-                label: "With Database",
-                value: "with-database",
-            },
-        ],
-    })) as "no-database" | "with-database"
+const template = (await select({
+    message: "Template",
+    options: [
+        {
+            label: "No Database",
+            value: "no-database",
+        },
+        {
+            label: "With Database",
+            value: "with-database",
+        },
+    ],
+})) as "no-database" | "with-database"
 
-    if (isCancel(template)) {
-        cancel("Cancelled.")
-        process.exit()
-    } else {
-        prompts.template = template
-    }
+if (isCancel(template)) {
+    cancel("Cancelled.")
+    process.exit()
+} else {
+    prompts.template = template
 }
 
 if (prompts.template === "no-database") {
@@ -212,71 +150,55 @@ if (prompts.template === "no-database") {
 }
 
 if (prompts.template === "with-database") {
-    if (cliOptions.realtime !== undefined) {
-        prompts.realtime = cliOptions.realtime
-    } else {
-        const realtime = await confirm({
-            message: "Will you use real-time database features?",
-            initialValue: prompts.realtime,
-        })
+    const realtime = await confirm({
+        message: "Will you use real-time database features?",
+        initialValue: prompts.realtime,
+    })
 
-        if (isCancel(realtime)) {
-            cancel("Cancelled.")
-            process.exit()
-        } else {
-            prompts.realtime = realtime
-        }
-    }
-}
-
-if (cliOptions.adapter) {
-    const mapCliAdapterToPromptAdapter = {
-        auto: "@sveltejs/adapter-auto",
-        node: "@sveltejs/adapter-node",
-        static: "@sveltejs/adapter-static",
-        vercel: "@sveltejs/adapter-vercel",
-        netlify: "@sveltejs/adapter-netlify",
-    }
-
-    prompts.adapter = mapCliAdapterToPromptAdapter[cliOptions.adapter]
-} else {
-    const adapter = (await select({
-        message: "Adapter",
-        options: [
-            {
-                label: "Auto",
-                value: "@sveltejs/adapter-auto",
-            },
-            {
-                label: "Node",
-                value: "@sveltejs/adapter-node",
-            },
-            {
-                label: "Static",
-                value: "@sveltejs/adapter-static",
-            },
-            {
-                label: "Vercel",
-                value: "@sveltejs/adapter-vercel",
-            },
-            {
-                label: "Netlify",
-                value: "@sveltejs/adapter-netlify",
-            },
-        ],
-    })) as
-        | "@sveltejs/adapter-auto"
-        | "@sveltejs/adapter-node"
-        | "@sveltejs/adapter-static"
-        | "@sveltejs/adapter-vercel"
-        | "@sveltejs/adapter-netlify"
-
-    if (isCancel(adapter)) {
+    if (isCancel(realtime)) {
         cancel("Cancelled.")
         process.exit()
     } else {
-        prompts.adapter = adapter
+        prompts.realtime = realtime
     }
+}
+
+const adapter = (await select({
+    message: "Adapter",
+    options: [
+        {
+            label: "Auto",
+            value: "@sveltejs/adapter-auto",
+        },
+        {
+            label: "Node",
+            value: "@sveltejs/adapter-node",
+        },
+        {
+            label: "Static",
+            value: "@sveltejs/adapter-static",
+        },
+        {
+            label: "Vercel",
+            value: "@sveltejs/adapter-vercel",
+        },
+        {
+            label: "Netlify",
+            value: "@sveltejs/adapter-netlify",
+        },
+    ],
+})) as
+    | "@sveltejs/adapter-auto"
+    | "@sveltejs/adapter-node"
+    | "@sveltejs/adapter-static"
+    | "@sveltejs/adapter-vercel"
+    | "@sveltejs/adapter-netlify"
+
+if (isCancel(adapter)) {
+    cancel("Cancelled.")
+    process.exit()
+} else {
+    prompts.adapter = adapter
 }
 
 // Copy SvelteKit template
@@ -515,36 +437,28 @@ if (prompts.adapter !== "@sveltejs/adapter-auto") {
     )
 }
 
-if (cliOptions.install !== undefined) {
-    prompts.install = cliOptions.install
-} else {
-    const install = await confirm({
-        message: "Install Dependencies",
-        initialValue: prompts.install,
-    })
+const install = await confirm({
+    message: "Install Dependencies",
+    initialValue: prompts.install,
+})
 
-    if (isCancel(install)) {
-        cancel("Cancelled.")
-        process.exit()
-    } else {
-        prompts.install = install
-    }
+if (isCancel(install)) {
+    cancel("Cancelled.")
+    process.exit()
+} else {
+    prompts.install = install
 }
 
-if (cliOptions.git !== undefined) {
-    prompts.git = cliOptions.git
-} else {
-    const git = await confirm({
-        message: "Use Git?",
-        initialValue: prompts.git,
-    })
+const git = await confirm({
+    message: "Use Git?",
+    initialValue: prompts.git,
+})
 
-    if (isCancel(git)) {
-        cancel("Cancelled.")
-        process.exit()
-    } else {
-        prompts.git = git
-    }
+if (isCancel(git)) {
+    cancel("Cancelled.")
+    process.exit()
+} else {
+    prompts.git = git
 }
 
 if (prompts.install) {
