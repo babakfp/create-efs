@@ -9,7 +9,7 @@ import {
     rename,
 } from "node:fs/promises"
 import { existsSync } from "node:fs"
-import { execSync } from "node:child_process"
+import { exec } from "node:child_process"
 import { Option, program } from "commander"
 import { Downloader } from "nodejs-file-downloader"
 import { unZip } from "./lib/unZip.js"
@@ -550,9 +550,13 @@ if (prompts.install) {
 
     const command = [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && ")
 
-    execSync(command)
-
-    installSpinner.stop("Installed dependencies!")
+    exec(command, (error) => {
+        if (error?.code) {
+            installSpinner.stop("Failed to install dependencies!", error.code)
+        } else {
+            installSpinner.stop("Installed dependencies!")
+        }
+    })
 }
 
 if (prompts.git) {
@@ -566,9 +570,13 @@ if (prompts.git) {
         "git commit -m 'First commit'",
     ].join(" && ")
 
-    execSync(command)
-
-    installSpinner.stop("Initialized Git!")
+    exec(command, (error) => {
+        if (error?.code) {
+            installSpinner.stop("Failed to initialized Git!", error.code)
+        } else {
+            installSpinner.stop("Initialized Git!")
+        }
+    })
 }
 
 outro("Your app is ready!")
