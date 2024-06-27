@@ -28,14 +28,14 @@ const rootPath = isRunningFromNpmRegistry
     : process.cwd()
 
 const prompts = {
-    name: "",
-    directoryNotEmpty: "",
-    template: "",
-    realtime: false,
-    adapter: "",
-    install: true,
-    git: true,
-    environmentVariables: true,
+    enterNameOrPath: "",
+    chooseWhatIfDirectoryNotEmpty: "",
+    chooseTemplate: "",
+    isRealTimePbNeeded: false,
+    chooseSvelteKitAdapter: "",
+    isInstallDependencies: true,
+    isGitInitAndCommit: true,
+    isEnvNeeded: true,
 }
 
 const ADAPTER_VERSIONS = {
@@ -48,18 +48,18 @@ const ADAPTER_VERSIONS = {
 
 prompter.insertIntro("Welcome")
 
-prompts.name = await prompter.addTextPrompt({
+prompts.enterNameOrPath = await prompter.addTextPrompt({
     message: "Name / Path",
     placeholder: "Hit Enter to use the current directory.",
 })
 
-const projectPath = join(process.cwd(), prompts.name)
+const projectPath = join(process.cwd(), prompts.enterNameOrPath)
 
 if (existsSync(projectPath)) {
     const projectDirFiles = await readdir(projectPath)
 
     if (projectDirFiles.length) {
-        prompts.directoryNotEmpty = await prompter.addRadioPrompt({
+        prompts.chooseWhatIfDirectoryNotEmpty = await prompter.addRadioPrompt({
             message: "Directory Not Empty",
             options: [
                 { label: "Exit", value: "exit" },
@@ -67,11 +67,11 @@ if (existsSync(projectPath)) {
             ],
         })
 
-        if (prompts.directoryNotEmpty === "exit") {
+        if (prompts.chooseWhatIfDirectoryNotEmpty === "exit") {
             prompter.exit("Exited.")
         }
 
-        if (prompts.directoryNotEmpty === "delete") {
+        if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
             const deleteSpinner = createSpinner()
             deleteSpinner.start("Deleting project")
 
@@ -83,7 +83,7 @@ if (existsSync(projectPath)) {
     }
 }
 
-prompts.template = await prompter.addRadioPrompt({
+prompts.chooseTemplate = await prompter.addRadioPrompt({
     message: "Template",
     options: [
         {
@@ -97,21 +97,21 @@ prompts.template = await prompter.addRadioPrompt({
     ],
 })
 
-if (prompts.template === "no-database") {
-    prompts.environmentVariables = await prompter.addConfirmPrompt({
+if (prompts.chooseTemplate === "no-database") {
+    prompts.isEnvNeeded = await prompter.addConfirmPrompt({
         message: "Are you going to use Environment Variables?",
-        initialValue: prompts.environmentVariables,
+        initialValue: prompts.isEnvNeeded,
     })
 }
 
-if (prompts.template === "with-database") {
-    prompts.realtime = await prompter.addConfirmPrompt({
+if (prompts.chooseTemplate === "with-database") {
+    prompts.isRealTimePbNeeded = await prompter.addConfirmPrompt({
         message: "Will you use real-time database features?",
-        initialValue: prompts.realtime,
+        initialValue: prompts.isRealTimePbNeeded,
     })
 }
 
-prompts.adapter = await prompter.addRadioPrompt({
+prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
     message: "Adapter",
     options: [
         {
@@ -140,7 +140,7 @@ prompts.adapter = await prompter.addRadioPrompt({
 // Copy SvelteKit template
 
 const projectClientPath =
-    prompts.template === "no-database"
+    prompts.chooseTemplate === "no-database"
         ? projectPath
         : join(projectPath, "client")
 
@@ -161,8 +161,8 @@ await rename(
 )
 
 if (
-    prompts.template === "with-database" ||
-    (prompts.template === "no-database" && prompts.environmentVariables)
+    prompts.chooseTemplate === "with-database" ||
+    (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded)
 ) {
     const path = join(projectClientPath, ".gitignore")
     const oldContent = await readFile(path, {
@@ -177,12 +177,12 @@ if (
     await writeFile(path, newContent)
 }
 
-if (prompts.template === "no-database" && prompts.environmentVariables) {
+if (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded) {
     await writeFile(join(projectClientPath, ".env"), "")
     await writeFile(join(projectClientPath, ".env.example"), "")
 }
 
-if (prompts.template === "with-database") {
+if (prompts.chooseTemplate === "with-database") {
     await cp(
         join(rootPath, "templates", "PocketBase Client"),
         projectClientPath,
@@ -191,7 +191,7 @@ if (prompts.template === "with-database") {
 
     // ---
 
-    const envPublicPrefix = prompts.realtime ? "PUBLIC_" : ""
+    const envPublicPrefix = prompts.isRealTimePbNeeded ? "PUBLIC_" : ""
 
     const getEnvFileContent = async (useDefaultUrl: boolean) => {
         const defaultUrl = "http://127.0.0.1:8090"
@@ -275,7 +275,13 @@ if (prompts.template === "with-database") {
     // --- PocketBase Type Generation
 
     const typeGenOutputPath = join(
-        ...["src", "lib", prompts.realtime ? "" : "server", "pb", "types.ts"],
+        ...[
+            "src",
+            "lib",
+            prompts.isRealTimePbNeeded ? "" : "server",
+            "pb",
+            "types.ts",
+        ],
     )
 
     const pbTypeGenScript = {
@@ -312,16 +318,16 @@ if (prompts.template === "with-database") {
 
 // ---
 
-if (prompts.adapter !== "@sveltejs/adapter-auto") {
+if (prompts.chooseSvelteKitAdapter !== "@sveltejs/adapter-auto") {
     const packageJsonPath = join(projectClientPath, "package.json")
     const packageJsonContent = await readFile(packageJsonPath)
     const packageJsonJson = JSON.parse(String(packageJsonContent))
     packageJsonJson.devDependencies = Object.fromEntries(
         Object.entries(packageJsonJson.devDependencies).map(([key, value]) => {
             if (key === "@sveltejs/adapter-auto") {
-                key = prompts.adapter
+                key = prompts.chooseSvelteKitAdapter
                 // @ts-expect-error
-                value = ADAPTER_VERSIONS[prompts.adapter]
+                value = ADAPTER_VERSIONS[prompts.chooseSvelteKitAdapter]
             }
             return [key, value]
         }),
@@ -339,7 +345,10 @@ if (prompts.adapter !== "@sveltejs/adapter-auto") {
     })
     await writeFile(
         svelteConfigPath,
-        svelteConfigContent.replace("@sveltejs/adapter-auto", prompts.adapter),
+        svelteConfigContent.replace(
+            "@sveltejs/adapter-auto",
+            prompts.chooseSvelteKitAdapter,
+        ),
     )
 
     // ---
@@ -352,13 +361,13 @@ if (prompts.adapter !== "@sveltejs/adapter-auto") {
     const replaceWith = ["/.svelte-kit/"]
 
     if (
-        prompts.adapter === "@sveltejs/adapter-node" ||
-        prompts.adapter === "@sveltejs/adapter-static"
+        prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-node" ||
+        prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-static"
     ) {
         replaceWith.push("/build/")
-    } else if (prompts.adapter === "@sveltejs/adapter-vercel") {
+    } else if (prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-vercel") {
         replaceWith.push("/.vercel/")
-    } else if (prompts.adapter === "@sveltejs/adapter-netlify") {
+    } else if (prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-netlify") {
         replaceWith.push("/.netlify/")
     }
 
@@ -368,17 +377,17 @@ if (prompts.adapter !== "@sveltejs/adapter-auto") {
     )
 }
 
-prompts.install = await prompter.addConfirmPrompt({
+prompts.isInstallDependencies = await prompter.addConfirmPrompt({
     message: "Install Dependencies",
-    initialValue: prompts.install,
+    initialValue: prompts.isInstallDependencies,
 })
 
-prompts.git = await prompter.addConfirmPrompt({
+prompts.isGitInitAndCommit = await prompter.addConfirmPrompt({
     message: "Use Git?",
-    initialValue: prompts.git,
+    initialValue: prompts.isGitInitAndCommit,
 })
 
-if (prompts.install) {
+if (prompts.isInstallDependencies) {
     const installSpinner = createSpinner()
 
     try {
@@ -397,7 +406,7 @@ if (prompts.install) {
     }
 }
 
-if (prompts.git) {
+if (prompts.isGitInitAndCommit) {
     const installSpinner = createSpinner()
 
     try {
