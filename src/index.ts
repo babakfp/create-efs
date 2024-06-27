@@ -62,6 +62,7 @@ program
         ]),
     )
     .option("--install")
+    .option("--git")
 
     .helpOption("-h, --help", "Display help for command.")
 
@@ -74,6 +75,7 @@ const cliOptions = program.opts<{
     realtime?: boolean
     adapter?: "auto" | "node" | "static" | "vercel" | "netlify"
     install?: boolean
+    git?: boolean
 }>()
 
 const prompts = {
@@ -83,6 +85,7 @@ const prompts = {
     realtime: false,
     adapter: "",
     install: true,
+    git: true,
     environmentVariables: true,
 }
 
@@ -530,10 +533,39 @@ if (cliOptions.install !== undefined) {
     }
 }
 
+if (cliOptions.git !== undefined) {
+    prompts.git = cliOptions.git
+} else {
+    const git = await confirm({
+        message: "Use Git?",
+        initialValue: prompts.git,
+    })
+
+    if (isCancel(git)) {
+        cancel("Operation cancelled!")
+        process.exit()
+    } else {
+        prompts.git = git
+    }
+}
+
 if (prompts.install) {
     const command = [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && ")
 
     console.log("Installing dependencies...")
+
+    execSync(command)
+}
+
+if (prompts.git) {
+    const command = [
+        `cd ${projectClientPath}`,
+        "git init",
+        "git add .",
+        "git commit -m 'First commit'",
+    ].join(" && ")
+
+    console.log("Initializing Git...")
 
     execSync(command)
 }
