@@ -63,7 +63,11 @@ if (existsSync(appPath)) {
             message: "Directory Not Empty",
             options: [
                 { label: "Exit", value: "exit" },
-                { label: "Delete and Continue!", value: "delete" },
+                {
+                    label: "Delete and Continue!",
+                    value: "delete",
+                    hint: "This will delete the directory and all its contents.",
+                },
             ],
         })
 

@@ -81,6 +81,7 @@ export const createPrompter = async () => {
         T_Options extends {
             label: string
             value: string
+            hint?: string
         }[],
     >(options: {
         message: string
