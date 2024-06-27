@@ -53,30 +53,28 @@ prompts.enterNameOrPath = await prompter.addTextPrompt({
     placeholder: "Hit Enter to use the current directory.",
 })
 
-const projectPath = join(process.cwd(), prompts.enterNameOrPath)
+const appPath = join(process.cwd(), prompts.enterNameOrPath)
 
-if (existsSync(projectPath)) {
-    const projectDirFiles = await readdir(projectPath)
+if (existsSync(appPath)) {
+    const projectDirFiles = await readdir(appPath)
 
     if (projectDirFiles.length) {
         prompts.chooseWhatIfDirectoryNotEmpty = await prompter.addRadioPrompt({
             message: "Directory Not Empty",
             options: [
                 { label: "Exit", value: "exit" },
-                { label: "Delete!", value: "delete" },
+                { label: "Delete and Continue!", value: "delete" },
             ],
         })
 
         if (prompts.chooseWhatIfDirectoryNotEmpty === "exit") {
             prompter.exit("Exited.")
-        }
-
-        if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
+        } else if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
             const deleteSpinner = createSpinner()
             deleteSpinner.start("Deleting project")
 
-            await rm(projectPath, { recursive: true })
-            await mkdir(projectPath)
+            await rm(appPath, { recursive: true })
+            await mkdir(appPath)
 
             deleteSpinner.stop("Project deleted.")
         }
@@ -99,14 +97,14 @@ prompts.chooseTemplate = await prompter.addRadioPrompt({
 
 if (prompts.chooseTemplate === "no-database") {
     prompts.isEnvNeeded = await prompter.addConfirmPrompt({
-        message: "Are you going to use Environment Variables?",
+        message: "Environment Variables?",
         initialValue: prompts.isEnvNeeded,
     })
 }
 
 if (prompts.chooseTemplate === "with-database") {
     prompts.isRealTimePbNeeded = await prompter.addConfirmPrompt({
-        message: "Will you use real-time database features?",
+        message: "Setup PocketBase for real-time features?",
         initialValue: prompts.isRealTimePbNeeded,
     })
 }
@@ -140,9 +138,7 @@ prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
 // Copy SvelteKit template
 
 const projectClientPath =
-    prompts.chooseTemplate === "no-database"
-        ? projectPath
-        : join(projectPath, "client")
+    prompts.chooseTemplate === "no-database" ? appPath : join(appPath, "client")
 
 await cp(join(rootPath, "templates", "SvelteKit"), projectClientPath, {
     recursive: true,
@@ -219,7 +215,7 @@ if (prompts.chooseTemplate === "with-database") {
 
     // --- PocketBase
 
-    await cp(join(rootPath, "templates", "PocketBase"), projectPath, {
+    await cp(join(rootPath, "templates", "PocketBase"), appPath, {
         recursive: true,
     })
 
@@ -236,7 +232,7 @@ if (prompts.chooseTemplate === "with-database") {
             })),
         })
 
-        await editFile(join(projectPath, "storage", "Dockerfile"), (content) =>
+        await editFile(join(appPath, "storage", "Dockerfile"), (content) =>
             content.replace(
                 "ARG PB_VERSION=0.22.12",
                 `ARG PB_VERSION=${selectedAsset.split("_")[1]}`,
@@ -249,7 +245,7 @@ if (prompts.chooseTemplate === "with-database") {
 
         const downloader = new Downloader({
             url: downloadUrl,
-            directory: join(projectPath, "storage"),
+            directory: join(appPath, "storage"),
         })
 
         let isDownloadSeccessful = false
@@ -268,7 +264,7 @@ if (prompts.chooseTemplate === "with-database") {
         }
 
         if (isDownloadSeccessful) {
-            await unZip(join(projectPath, "storage", selectedAsset))
+            await unZip(join(appPath, "storage", selectedAsset))
         }
     }
 
