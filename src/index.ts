@@ -25,18 +25,21 @@ import {
     spinner,
 } from "@clack/prompts"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
-import pkg from "../package.json" with { type: "json" }
 
 const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
 const rootPath = isRunningFromNpmRegistry
-    ? join(import.meta.dirname, "../..")
+    ? join(import.meta.dirname, "..")
     : process.cwd()
 
+const packageJson = JSON.parse(
+    await readFile(join(rootPath, "package.json"), { encoding: "utf-8" }),
+)
+
 program
-    .name(pkg.name)
-    .description(pkg.description)
-    .version(pkg.version, "-v, --version")
+    .name(packageJson.name)
+    .description(packageJson.description)
+    .version(packageJson.version, "-v, --version")
 
     .option("--name [name]")
     .addOption(
