@@ -1,4 +1,4 @@
-import { exec } from "node:child_process"
+import { exec, type ExecException } from "node:child_process"
 import { existsSync } from "node:fs"
 import {
     cp,
@@ -10,6 +10,7 @@ import {
     writeFile,
 } from "node:fs/promises"
 import { join } from "node:path"
+import { promisify } from "node:util"
 import {
     cancel,
     confirm,
@@ -25,6 +26,8 @@ import { Downloader } from "nodejs-file-downloader"
 import { editFile } from "./lib/editFile.js"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import { unZip } from "./lib/unZip.js"
+
+const execAsync = promisify(exec)
 
 const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
@@ -550,13 +553,15 @@ if (prompts.install) {
 
     const command = [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && ")
 
-    exec(command, (error) => {
-        if (error?.code) {
-            installSpinner.stop("Dependency installation failed.", error.code)
-        } else {
-            installSpinner.stop("Dependencies installed.")
-        }
-    })
+    try {
+        await execAsync(command)
+        installSpinner.stop("Dependencies installed.")
+    } catch (error) {
+        installSpinner.stop(
+            "Dependency installation failed.",
+            (error as ExecException).code,
+        )
+    }
 }
 
 if (prompts.git) {
@@ -567,16 +572,18 @@ if (prompts.git) {
         `cd ${projectClientPath}`,
         "git init",
         "git add .",
-        "git commit -m 'First commit'",
+        'git commit -m "First commit"',
     ].join(" && ")
 
-    exec(command, (error) => {
-        if (error?.code) {
-            installSpinner.stop("Git initialization failed.", error.code)
-        } else {
-            installSpinner.stop("Git initialized.")
-        }
-    })
+    try {
+        await execAsync(command)
+        installSpinner.stop("Git initialized.")
+    } catch (error) {
+        installSpinner.stop(
+            "Git initialization failed.",
+            (error as ExecException).code,
+        )
+    }
 }
 
 outro("Your app is ready.")
