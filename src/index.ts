@@ -11,20 +11,13 @@ import {
 } from "node:fs/promises"
 import { join } from "node:path"
 import { promisify } from "node:util"
-import {
-    cancel,
-    confirm,
-    intro,
-    isCancel,
-    outro,
-    select,
-    spinner,
-    text,
-} from "@clack/prompts"
 import { Downloader } from "nodejs-file-downloader"
 import { editFile } from "./lib/editFile.js"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
+import { createPrompter, createSpinner } from "./lib/prompts.js"
 import { unZip } from "./lib/unZip.js"
+
+const prompter = await createPrompter()
 
 const execAsync = promisify(exec)
 
@@ -53,22 +46,12 @@ const ADAPTER_VERSIONS = {
     "@sveltejs/adapter-netlify": "4.2.0",
 }
 
-console.log()
-intro("Welcome")
+prompter.insertIntro("Welcome")
 
-const name = await text({
+prompts.name = await prompter.addTextPrompt({
     message: "Name / Path",
     placeholder: "Hit Enter to use the current directory.",
 })
-
-if (isCancel(name)) {
-    cancel("Cancelled.")
-    process.exit()
-} else {
-    prompts.name = name ?? ""
-}
-
-prompts.name = prompts.name.trim()
 
 const projectPath = join(process.cwd(), prompts.name)
 
@@ -76,34 +59,20 @@ if (existsSync(projectPath)) {
     const projectDirFiles = await readdir(projectPath)
 
     if (projectDirFiles.length) {
-        const directoryNotEmpty = (await select({
+        prompts.directoryNotEmpty = await prompter.addRadioPrompt({
             message: "Directory Not Empty",
             options: [
-                {
-                    label: "Exit",
-                    value: "exit",
-                },
-                {
-                    label: "Delete!",
-                    value: "delete",
-                },
+                { label: "Exit", value: "exit" },
+                { label: "Delete!", value: "delete" },
             ],
-        })) as "exit" | "delete"
-
-        if (isCancel(directoryNotEmpty)) {
-            cancel("Cancelled.")
-            process.exit()
-        } else {
-            prompts.directoryNotEmpty = directoryNotEmpty
-        }
+        })
 
         if (prompts.directoryNotEmpty === "exit") {
-            cancel("Exited.")
-            process.exit()
+            prompter.exit("Exited.")
         }
 
         if (prompts.directoryNotEmpty === "delete") {
-            const deleteSpinner = spinner()
+            const deleteSpinner = createSpinner()
             deleteSpinner.start("Deleting project")
 
             await rm(projectPath, { recursive: true })
@@ -114,7 +83,7 @@ if (existsSync(projectPath)) {
     }
 }
 
-const template = (await select({
+prompts.template = await prompter.addRadioPrompt({
     message: "Template",
     options: [
         {
@@ -126,44 +95,23 @@ const template = (await select({
             value: "with-database",
         },
     ],
-})) as "no-database" | "with-database"
-
-if (isCancel(template)) {
-    cancel("Cancelled.")
-    process.exit()
-} else {
-    prompts.template = template
-}
+})
 
 if (prompts.template === "no-database") {
-    const environmentVariables = await confirm({
+    prompts.environmentVariables = await prompter.addConfirmPrompt({
         message: "Are you going to use Environment Variables?",
         initialValue: prompts.environmentVariables,
     })
-
-    if (isCancel(environmentVariables)) {
-        cancel("Cancelled.")
-        process.exit()
-    } else {
-        prompts.environmentVariables = environmentVariables
-    }
 }
 
 if (prompts.template === "with-database") {
-    const realtime = await confirm({
+    prompts.realtime = await prompter.addConfirmPrompt({
         message: "Will you use real-time database features?",
         initialValue: prompts.realtime,
     })
-
-    if (isCancel(realtime)) {
-        cancel("Cancelled.")
-        process.exit()
-    } else {
-        prompts.realtime = realtime
-    }
 }
 
-const adapter = (await select({
+prompts.adapter = await prompter.addRadioPrompt({
     message: "Adapter",
     options: [
         {
@@ -187,19 +135,7 @@ const adapter = (await select({
             value: "@sveltejs/adapter-netlify",
         },
     ],
-})) as
-    | "@sveltejs/adapter-auto"
-    | "@sveltejs/adapter-node"
-    | "@sveltejs/adapter-static"
-    | "@sveltejs/adapter-vercel"
-    | "@sveltejs/adapter-netlify"
-
-if (isCancel(adapter)) {
-    cancel("Cancelled.")
-    process.exit()
-} else {
-    prompts.adapter = adapter
-}
+})
 
 // Copy SvelteKit template
 
@@ -292,18 +228,13 @@ if (prompts.template === "with-database") {
     const assets = await getLatestReleaseAssets()
 
     if (assets.length) {
-        const selectedAsset = (await select({
+        const selectedAsset = await prompter.addRadioPrompt({
             message: "Choose an Asset",
             options: assets.map((asset) => ({
                 label: asset.name,
                 value: asset.name,
             })),
-        })) as string
-
-        if (isCancel(selectedAsset)) {
-            cancel("Cancelled.")
-            process.exit()
-        }
+        })
 
         await editFile(join(projectPath, "storage", "Dockerfile"), (content) =>
             content.replace(
@@ -322,7 +253,7 @@ if (prompts.template === "with-database") {
         })
 
         let isDownloadSeccessful = false
-        const downloadSpinner = spinner()
+        const downloadSpinner = createSpinner()
 
         try {
             downloadSpinner.start("Downloading PocketBase")
@@ -437,32 +368,18 @@ if (prompts.adapter !== "@sveltejs/adapter-auto") {
     )
 }
 
-const install = await confirm({
+prompts.install = await prompter.addConfirmPrompt({
     message: "Install Dependencies",
     initialValue: prompts.install,
 })
 
-if (isCancel(install)) {
-    cancel("Cancelled.")
-    process.exit()
-} else {
-    prompts.install = install
-}
-
-const git = await confirm({
+prompts.git = await prompter.addConfirmPrompt({
     message: "Use Git?",
     initialValue: prompts.git,
 })
 
-if (isCancel(git)) {
-    cancel("Cancelled.")
-    process.exit()
-} else {
-    prompts.git = git
-}
-
 if (prompts.install) {
-    const installSpinner = spinner()
+    const installSpinner = createSpinner()
 
     try {
         installSpinner.start("Installing dependencies")
@@ -481,7 +398,7 @@ if (prompts.install) {
 }
 
 if (prompts.git) {
-    const installSpinner = spinner()
+    const installSpinner = createSpinner()
 
     try {
         installSpinner.start("Initializing Git")
@@ -504,4 +421,4 @@ if (prompts.git) {
     }
 }
 
-outro("Your app is ready.")
+prompter.insertOutro("Your app is ready.")
