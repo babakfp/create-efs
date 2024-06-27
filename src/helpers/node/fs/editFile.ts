@@ -1,10 +1,10 @@
-import { readFile, writeFile } from "node:fs/promises"
+import { readFile, writeFile } from "./index.js"
 
 export const editFile = async (
     path: string,
     callback: (content: string) => string,
 ) => {
-    const content = await readFile(path, { encoding: "utf-8" })
+    const content = await readFile(path)
 
     const newContent = callback(content)
 

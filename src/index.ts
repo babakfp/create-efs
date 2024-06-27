@@ -1,18 +1,20 @@
 import { exec, type ExecException } from "node:child_process"
-import { existsSync } from "node:fs"
-import {
-    cp,
-    mkdir,
-    readdir,
-    readFile,
-    rename,
-    rm,
-    writeFile,
-} from "node:fs/promises"
 import { join } from "node:path"
 import { promisify } from "node:util"
 import { Downloader } from "nodejs-file-downloader"
-import { editFile } from "./lib/editFile.js"
+import {
+    copyDir,
+    editFile,
+    exists,
+    makeDir,
+    readDir,
+    readFile,
+    readJson,
+    removeDir,
+    rename,
+    writeFile,
+    writeJson,
+} from "./helpers/node/fs/index.js"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import { createPrompter } from "./lib/prompts.js"
 import { unZip } from "./lib/unZip.js"
@@ -46,9 +48,7 @@ const ADAPTER_VERSIONS = {
     "@sveltejs/adapter-netlify": "4.2.0",
 }
 
-const packageJson = JSON.parse(
-    await readFile(join(rootPath, "package.json"), { encoding: "utf-8" }),
-)
+const packageJson = await readJson(join(rootPath, "package.json"))
 
 prompter.insertIntro(`Welcome (v${packageJson.version})`)
 
@@ -59,8 +59,8 @@ prompts.enterNameOrPath = await prompter.addTextPrompt({
 
 const appPath = join(process.cwd(), prompts.enterNameOrPath)
 
-if (existsSync(appPath)) {
-    const projectDirFiles = await readdir(appPath)
+if (exists(appPath)) {
+    const projectDirFiles = await readDir(appPath)
 
     if (projectDirFiles.length) {
         prompts.chooseWhatIfDirectoryNotEmpty = await prompter.addRadioPrompt({
@@ -80,6 +80,7 @@ if (existsSync(appPath)) {
         } else if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
             const areYouSure = await prompter.addConfirmPrompt({
                 message: `Delete ${appPath}`,
+                initialValue: false,
             })
 
             if (!areYouSure) {
@@ -89,8 +90,8 @@ if (existsSync(appPath)) {
             const deleteSpinner = prompter.createSpinner()
             deleteSpinner.start("Deleting project")
 
-            await rm(appPath, { recursive: true })
-            await mkdir(appPath)
+            await removeDir(appPath)
+            await makeDir(appPath)
 
             deleteSpinner.stop("Project deleted.")
         }
@@ -156,7 +157,7 @@ prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
 const projectClientPath =
     prompts.chooseTemplate === "no-database" ? appPath : join(appPath, "client")
 
-await cp(join(rootPath, "templates", "SvelteKit"), projectClientPath, {
+await copyDir(join(rootPath, "templates", "SvelteKit"), projectClientPath, {
     recursive: true,
 })
 
@@ -177,9 +178,7 @@ if (
     (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded)
 ) {
     const path = join(projectClientPath, ".gitignore")
-    const oldContent = await readFile(path, {
-        encoding: "utf-8",
-    })
+    const oldContent = await readFile(path)
 
     const newContent = oldContent.replace(
         "/.svelte-kit/",
@@ -195,7 +194,7 @@ if (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded) {
 }
 
 if (prompts.chooseTemplate === "with-database") {
-    await cp(
+    await copyDir(
         join(rootPath, "templates", "PocketBase Client"),
         projectClientPath,
         { recursive: true },
@@ -231,7 +230,7 @@ if (prompts.chooseTemplate === "with-database") {
 
     // --- PocketBase
 
-    await cp(join(rootPath, "templates", "PocketBase"), appPath, {
+    await copyDir(join(rootPath, "templates", "PocketBase"), appPath, {
         recursive: true,
     })
 
@@ -322,10 +321,7 @@ if (prompts.chooseTemplate === "with-database") {
 
     packageJsonJson.scripts = newPackageJsonScripts
 
-    await writeFile(
-        packageJsonPath,
-        JSON.stringify(packageJsonJson, null, 4) + "\n",
-    )
+    await writeJson(packageJsonPath, packageJsonJson)
 }
 
 // ---
@@ -344,17 +340,12 @@ if (prompts.chooseSvelteKitAdapter !== "@sveltejs/adapter-auto") {
             return [key, value]
         }),
     )
-    await writeFile(
-        packageJsonPath,
-        JSON.stringify(packageJsonJson, null, 4) + "\n",
-    )
+    await writeJson(packageJsonPath, packageJsonJson)
 
     // ---
 
     const svelteConfigPath = join(projectClientPath, "svelte.config.js")
-    const svelteConfigContent = await readFile(svelteConfigPath, {
-        encoding: "utf-8",
-    })
+    const svelteConfigContent = await readFile(svelteConfigPath)
     await writeFile(
         svelteConfigPath,
         svelteConfigContent.replace(
@@ -366,9 +357,7 @@ if (prompts.chooseSvelteKitAdapter !== "@sveltejs/adapter-auto") {
     // ---
 
     const gitignorePath = join(projectClientPath, ".gitignore")
-    const gitignoreContent = await readFile(gitignorePath, {
-        encoding: "utf-8",
-    })
+    const gitignoreContent = await readFile(gitignorePath)
 
     const replaceWith = ["/.svelte-kit/"]
 
