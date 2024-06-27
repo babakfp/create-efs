@@ -1,30 +1,30 @@
+import { exec } from "node:child_process"
+import { existsSync } from "node:fs"
+import {
+    cp,
+    mkdir,
+    readdir,
+    readFile,
+    rename,
+    rm,
+    writeFile,
+} from "node:fs/promises"
 import { join } from "node:path"
 import {
-    readdir,
-    mkdir,
-    rm,
-    cp,
-    readFile,
-    writeFile,
-    rename,
-} from "node:fs/promises"
-import { existsSync } from "node:fs"
-import { exec } from "node:child_process"
+    cancel,
+    confirm,
+    intro,
+    isCancel,
+    outro,
+    select,
+    spinner,
+    text,
+} from "@clack/prompts"
 import { Option, program } from "commander"
 import { Downloader } from "nodejs-file-downloader"
-import { unZip } from "./lib/unZip.js"
 import { editFile } from "./lib/editFile.js"
-import {
-    intro,
-    outro,
-    text,
-    select,
-    confirm,
-    isCancel,
-    cancel,
-    spinner,
-} from "@clack/prompts"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
+import { unZip } from "./lib/unZip.js"
 
 const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
