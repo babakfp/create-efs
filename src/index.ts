@@ -531,7 +531,7 @@ if (cliOptions.install !== undefined) {
 }
 
 if (prompts.install) {
-    const command = [`cd ${projectClientPath}`, "pnpm i"].join(" && ")
+    const command = [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && ")
 
     console.log("Installing dependencies...")
 
