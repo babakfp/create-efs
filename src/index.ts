@@ -70,6 +70,14 @@ if (existsSync(appPath)) {
         if (prompts.chooseWhatIfDirectoryNotEmpty === "exit") {
             prompter.exit("Exited.")
         } else if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
+            const areYouSure = await prompter.addConfirmPrompt({
+                message: `Delete ${appPath}`,
+            })
+
+            if (!areYouSure) {
+                prompter.exit("Exited.")
+            }
+
             const deleteSpinner = createSpinner()
             deleteSpinner.start("Deleting project")
 
