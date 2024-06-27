@@ -13,7 +13,6 @@ import { execSync } from "node:child_process"
 import { Option, program } from "commander"
 import { Downloader } from "nodejs-file-downloader"
 import { unZip } from "./lib/unZip.js"
-import { createSpinner } from "./lib/spinner.js"
 import { editFile } from "./lib/editFile.js"
 import {
     intro,
@@ -23,6 +22,7 @@ import {
     confirm,
     isCancel,
     cancel,
+    spinner,
 } from "@clack/prompts"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import pkg from "../package.json" with { type: "json" }
@@ -121,10 +121,6 @@ if (cliOptions.name) {
 
 prompts.name = prompts.name.trim()
 
-if (prompts.name === "") {
-    console.log("Project will be created in the current directory.")
-}
-
 const projectPath = join(process.cwd(), prompts.name)
 
 if (existsSync(projectPath)) {
@@ -162,12 +158,13 @@ if (existsSync(projectPath)) {
         }
 
         if (prompts.directoryNotEmpty === "delete") {
-            const deleteSpinner = createSpinner("Deleting!").start()
+            const deleteSpinner = spinner()
+            deleteSpinner.start("Deleting project!")
 
             await rm(projectPath, { recursive: true })
             await mkdir(projectPath)
 
-            deleteSpinner.stop()
+            deleteSpinner.stop("Deleted project!")
         }
     }
 }
@@ -383,6 +380,13 @@ if (prompts.template === "with-database") {
             process.exit()
         }
 
+        await editFile(join(projectPath, "storage", "Dockerfile"), (content) =>
+            content.replace(
+                "ARG PB_VERSION=0.22.12",
+                `ARG PB_VERSION=${selectedAsset.split("_")[1]}`,
+            ),
+        )
+
         const downloadUrl = assets.filter(
             (asset) => asset.name === selectedAsset,
         )[0].downloadUrl
@@ -392,33 +396,24 @@ if (prompts.template === "with-database") {
             directory: join(projectPath, "storage"),
         })
 
-        const downloadSpinner = createSpinner(
-            "Downloading PocketBase executable!",
-        )
+        let isDownloadSeccessful = false
+        const downloadSpinner = spinner()
 
         try {
-            downloadSpinner.start()
+            downloadSpinner.start("Downloading PocketBase")
 
             await downloader.download()
 
-            downloadSpinner.stop()
-        } catch (error) {
-            downloadSpinner.stop()
+            downloadSpinner.stop("Downloaded PocketBase!")
 
-            console.log(
-                "Download failed. Download it yourself https://github.com/pocketbase/pocketbase/releases/latest",
-                error,
-            )
+            isDownloadSeccessful = true
+        } catch (error) {
+            downloadSpinner.stop("Failed to download PocketBase!", 1)
         }
 
-        await unZip(join(projectPath, "storage", selectedAsset))
-
-        await editFile(join(projectPath, "storage", "Dockerfile"), (content) =>
-            content.replace(
-                "ARG PB_VERSION=0.22.12",
-                `ARG PB_VERSION=${selectedAsset.split("_")[1]}`,
-            ),
-        )
+        if (isDownloadSeccessful) {
+            await unZip(join(projectPath, "storage", selectedAsset))
+        }
     }
 
     // --- PocketBase Type Generation
@@ -550,14 +545,20 @@ if (cliOptions.git !== undefined) {
 }
 
 if (prompts.install) {
+    const installSpinner = spinner()
+    installSpinner.start("Installing dependencies")
+
     const command = [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && ")
 
-    console.log("Installing dependencies...")
-
     execSync(command)
+
+    installSpinner.stop("Installed dependencies!")
 }
 
 if (prompts.git) {
+    const installSpinner = spinner()
+    installSpinner.start("Initializing Git")
+
     const command = [
         `cd ${projectClientPath}`,
         "git init",
@@ -565,9 +566,9 @@ if (prompts.git) {
         "git commit -m 'First commit'",
     ].join(" && ")
 
-    console.log("Initializing Git...")
-
     execSync(command)
+
+    installSpinner.stop("Initialized Git!")
 }
 
 outro("Your app is ready!")
