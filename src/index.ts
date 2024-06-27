@@ -101,18 +101,18 @@ const ADAPTER_VERSIONS = {
 }
 
 console.log()
-intro("Welcome!")
+intro("Welcome")
 
 if (cliOptions.name) {
     prompts.name = cliOptions.name
 } else {
     const name = await text({
         message: "Name / Path",
-        placeholder: "Hit Enter to use the current directory!",
+        placeholder: "Hit Enter to use the current directory.",
     })
 
     if (isCancel(name)) {
-        cancel("Operation cancelled!")
+        cancel("Cancelled.")
         process.exit()
     } else {
         prompts.name = name ?? ""
@@ -131,21 +131,21 @@ if (existsSync(projectPath)) {
             prompts.directoryNotEmpty = cliOptions.directoryNotEmpty
         } else {
             const directoryNotEmpty = (await select({
-                message: "Directory NOT Empty",
+                message: "Directory Not Empty",
                 options: [
                     {
                         label: "Exit",
                         value: "exit",
                     },
                     {
-                        label: "Delete",
+                        label: "Delete!",
                         value: "delete",
                     },
                 ],
             })) as "exit" | "delete"
 
             if (isCancel(directoryNotEmpty)) {
-                cancel("Operation cancelled!")
+                cancel("Cancelled.")
                 process.exit()
             } else {
                 prompts.directoryNotEmpty = directoryNotEmpty
@@ -153,18 +153,18 @@ if (existsSync(projectPath)) {
         }
 
         if (prompts.directoryNotEmpty === "exit") {
-            cancel("Exiting without creating a project!")
+            cancel("Exited.")
             process.exit()
         }
 
         if (prompts.directoryNotEmpty === "delete") {
             const deleteSpinner = spinner()
-            deleteSpinner.start("Deleting project!")
+            deleteSpinner.start("Deleting project")
 
             await rm(projectPath, { recursive: true })
             await mkdir(projectPath)
 
-            deleteSpinner.stop("Deleted project!")
+            deleteSpinner.stop("Project deleted.")
         }
     }
 }
@@ -187,7 +187,7 @@ if (cliOptions.template) {
     })) as "no-database" | "with-database"
 
     if (isCancel(template)) {
-        cancel("Operation cancelled!")
+        cancel("Cancelled.")
         process.exit()
     } else {
         prompts.template = template
@@ -201,7 +201,7 @@ if (prompts.template === "no-database") {
     })
 
     if (isCancel(environmentVariables)) {
-        cancel("Operation cancelled!")
+        cancel("Cancelled.")
         process.exit()
     } else {
         prompts.environmentVariables = environmentVariables
@@ -218,7 +218,7 @@ if (prompts.template === "with-database") {
         })
 
         if (isCancel(realtime)) {
-            cancel("Operation cancelled!")
+            cancel("Cancelled.")
             process.exit()
         } else {
             prompts.realtime = realtime
@@ -269,7 +269,7 @@ if (cliOptions.adapter) {
         | "@sveltejs/adapter-netlify"
 
     if (isCancel(adapter)) {
-        cancel("Operation cancelled!")
+        cancel("Cancelled.")
         process.exit()
     } else {
         prompts.adapter = adapter
@@ -376,7 +376,7 @@ if (prompts.template === "with-database") {
         })) as string
 
         if (isCancel(selectedAsset)) {
-            cancel("Operation cancelled!")
+            cancel("Cancelled.")
             process.exit()
         }
 
@@ -404,11 +404,11 @@ if (prompts.template === "with-database") {
 
             await downloader.download()
 
-            downloadSpinner.stop("Downloaded PocketBase!")
+            downloadSpinner.stop("PocketBase downloaded.")
 
             isDownloadSeccessful = true
         } catch (error) {
-            downloadSpinner.stop("Failed to download PocketBase!", 1)
+            downloadSpinner.stop("PocketBase download failed.", 1)
         }
 
         if (isDownloadSeccessful) {
@@ -521,7 +521,7 @@ if (cliOptions.install !== undefined) {
     })
 
     if (isCancel(install)) {
-        cancel("Operation cancelled!")
+        cancel("Cancelled.")
         process.exit()
     } else {
         prompts.install = install
@@ -537,7 +537,7 @@ if (cliOptions.git !== undefined) {
     })
 
     if (isCancel(git)) {
-        cancel("Operation cancelled!")
+        cancel("Cancelled.")
         process.exit()
     } else {
         prompts.git = git
@@ -552,9 +552,9 @@ if (prompts.install) {
 
     exec(command, (error) => {
         if (error?.code) {
-            installSpinner.stop("Failed to install dependencies!", error.code)
+            installSpinner.stop("Dependency installation failed.", error.code)
         } else {
-            installSpinner.stop("Installed dependencies!")
+            installSpinner.stop("Dependencies installed.")
         }
     })
 }
@@ -572,11 +572,11 @@ if (prompts.git) {
 
     exec(command, (error) => {
         if (error?.code) {
-            installSpinner.stop("Failed to initialized Git!", error.code)
+            installSpinner.stop("Git initialization failed.", error.code)
         } else {
-            installSpinner.stop("Initialized Git!")
+            installSpinner.stop("Git initialized.")
         }
     })
 }
 
-outro("Your app is ready!")
+outro("Your app is ready.")
