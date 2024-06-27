@@ -46,7 +46,11 @@ const ADAPTER_VERSIONS = {
     "@sveltejs/adapter-netlify": "4.2.0",
 }
 
-prompter.insertIntro("Welcome")
+const packageJson = JSON.parse(
+    await readFile(join(rootPath, "package.json"), { encoding: "utf-8" }),
+)
+
+prompter.insertIntro(`Welcome (v${packageJson.version})`)
 
 prompts.enterNameOrPath = await prompter.addTextPrompt({
     message: "Name / Path",
