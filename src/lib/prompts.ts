@@ -55,7 +55,7 @@ export const createPrompter = async () => {
             cancel(options.cancelMessage || DEFAULT_CANCEL_MESSAGE)
             process.exit()
         } else {
-            return input.trim() ?? ""
+            return (input ?? "").trim()
         }
     }
 
