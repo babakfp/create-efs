@@ -549,12 +549,14 @@ if (cliOptions.git !== undefined) {
 
 if (prompts.install) {
     const installSpinner = spinner()
-    installSpinner.start("Installing dependencies")
-
-    const command = [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && ")
 
     try {
-        await execAsync(command)
+        installSpinner.start("Installing dependencies")
+
+        await execAsync(
+            [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && "),
+        )
+
         installSpinner.stop("Dependencies installed.")
     } catch (error) {
         installSpinner.stop(
@@ -566,17 +568,19 @@ if (prompts.install) {
 
 if (prompts.git) {
     const installSpinner = spinner()
-    installSpinner.start("Initializing Git")
-
-    const command = [
-        `cd ${projectClientPath}`,
-        "git init",
-        "git add .",
-        'git commit -m "First commit"',
-    ].join(" && ")
 
     try {
-        await execAsync(command)
+        installSpinner.start("Initializing Git")
+
+        await execAsync(
+            [
+                `cd ${projectClientPath}`,
+                "git init",
+                "git add .",
+                'git commit -m "First commit"',
+            ].join(" && "),
+        )
+
         installSpinner.stop("Git initialized.")
     } catch (error) {
         installSpinner.stop(
