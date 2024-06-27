@@ -100,10 +100,7 @@ const ADAPTER_VERSIONS = {
     "@sveltejs/adapter-netlify": "4.2.0",
 }
 
-// Extra spacing
 console.log()
-console.log()
-
 intro("Welcome!")
 
 if (cliOptions.name) {
