@@ -14,7 +14,7 @@ import { promisify } from "node:util"
 import { Downloader } from "nodejs-file-downloader"
 import { editFile } from "./lib/editFile.js"
 import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
-import { createPrompter, createSpinner } from "./lib/prompts.js"
+import { createPrompter } from "./lib/prompts.js"
 import { unZip } from "./lib/unZip.js"
 
 const prompter = await createPrompter()
@@ -78,7 +78,7 @@ if (existsSync(appPath)) {
                 prompter.exit("Exited.")
             }
 
-            const deleteSpinner = createSpinner()
+            const deleteSpinner = prompter.createSpinner()
             deleteSpinner.start("Deleting project")
 
             await rm(appPath, { recursive: true })
@@ -257,7 +257,7 @@ if (prompts.chooseTemplate === "with-database") {
         })
 
         let isDownloadSeccessful = false
-        const downloadSpinner = createSpinner()
+        const downloadSpinner = prompter.createSpinner()
 
         try {
             downloadSpinner.start("Downloading PocketBase")
@@ -392,7 +392,7 @@ prompts.isGitInitAndCommit = await prompter.addConfirmPrompt({
 })
 
 if (prompts.isInstallDependencies) {
-    const installSpinner = createSpinner()
+    const installSpinner = prompter.createSpinner()
 
     try {
         installSpinner.start("Installing dependencies")
@@ -411,7 +411,7 @@ if (prompts.isInstallDependencies) {
 }
 
 if (prompts.isGitInitAndCommit) {
-    const installSpinner = createSpinner()
+    const installSpinner = prompter.createSpinner()
 
     try {
         installSpinner.start("Initializing Git")
