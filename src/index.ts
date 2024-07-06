@@ -204,13 +204,12 @@ if (prompts.chooseTemplate === "with-database") {
 
     const envPublicPrefix = prompts.isRealTimePbNeeded ? "PUBLIC_" : ""
 
-    const getEnvFileContent = async (useDefaultUrl: boolean) => {
+    const getEnvFileContent = async () => {
         const defaultUrl = "http://127.0.0.1:8090"
-        const defaultUrlContent = useDefaultUrl ? defaultUrl : ""
 
         const content =
             [
-                `${envPublicPrefix}PB_URL="${defaultUrlContent}" # Used to connect to DB and PocketBase type generation CLI`,
+                `${envPublicPrefix}PB_URL="${defaultUrl}" # Used to connect to DB and PocketBase type generation CLI`,
                 `PB_EMAIL="" # Used for PocketBase type generation CLI`,
                 `PB_PASSWORD="" # Used for PocketBase type generation CLI`,
             ].join("\n") + "\n"
@@ -218,14 +217,11 @@ if (prompts.chooseTemplate === "with-database") {
         return content
     }
 
-    await writeFile(
-        join(projectClientPath, ".env"),
-        await getEnvFileContent(true),
-    )
+    await writeFile(join(projectClientPath, ".env"), await getEnvFileContent())
 
     await writeFile(
         join(projectClientPath, ".env.example"),
-        await getEnvFileContent(false),
+        await getEnvFileContent(),
     )
 
     // --- PocketBase
