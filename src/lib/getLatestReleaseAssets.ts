@@ -1,3 +1,4 @@
+import { arch } from "node:os"
 import { dummyLatestReleaseData } from "./dummyLatestReleaseData.js"
 
 export const getLatestReleaseAssets = async (useDummyData = false) => {
@@ -19,6 +20,15 @@ export const getLatestReleaseAssets = async (useDummyData = false) => {
                 return asset.name.includes("darwin")
             } else if (process.platform === "linux") {
                 return asset.name.includes("linux")
+            }
+
+            return true
+        })
+        .filter((asset) => {
+            if (arch() === "x64" || arch() === "ia32") {
+                return asset.name.includes("amd64")
+            } else if (arch() === "arm64" || arch() === "arm") {
+                return asset.name.includes("arm64")
             }
 
             return true

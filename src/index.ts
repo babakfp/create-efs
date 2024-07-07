@@ -232,26 +232,34 @@ if (prompts.chooseTemplate === "with-database") {
 
     // --- Download PocketBase Executable
 
-    const assets = await getLatestReleaseAssets()
+    const pbReleases = await getLatestReleaseAssets()
 
-    if (assets.length) {
-        const selectedAsset = await prompter.addRadioPrompt({
-            message: "Choose an Asset",
-            options: assets.map((asset) => ({
-                label: asset.name,
-                value: asset.name,
-            })),
-        })
+    if (pbReleases.length) {
+        let selectedPbReleaseName: string
+
+        if (pbReleases.length > 1) {
+            selectedPbReleaseName = await prompter.addRadioPrompt({
+                message: "Choose an Asset",
+                options: pbReleases.map((asset) => ({
+                    label: asset.name,
+                    value: asset.name,
+                })),
+            })
+        } else {
+            selectedPbReleaseName = pbReleases[0].name
+        }
+
+        const pbVersion = selectedPbReleaseName.split("_")[1]
 
         await editFile(join(appPath, "storage", "Dockerfile"), (content) =>
             content.replace(
                 "ARG PB_VERSION=0.22.12",
-                `ARG PB_VERSION=${selectedAsset.split("_")[1]}`,
+                `ARG PB_VERSION=${pbVersion}`,
             ),
         )
 
-        const downloadUrl = assets.filter(
-            (asset) => asset.name === selectedAsset,
+        const downloadUrl = pbReleases.filter(
+            (asset) => asset.name === selectedPbReleaseName,
         )[0].downloadUrl
 
         const downloader = new Downloader({
@@ -275,7 +283,7 @@ if (prompts.chooseTemplate === "with-database") {
         }
 
         if (isDownloadSeccessful) {
-            await unZip(join(appPath, "storage", selectedAsset))
+            await unZip(join(appPath, "storage", selectedPbReleaseName))
         }
     }
 
