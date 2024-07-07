@@ -21,8 +21,6 @@ import { unZip } from "./lib/unZip.js"
 
 const execAsync = promisify(exec)
 
-const prompter = await createPrompter()
-
 const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
 const rootPath = isRunningFromNpmRegistry
@@ -49,6 +47,8 @@ const ADAPTER_VERSIONS = {
 }
 
 const packageJson = await readJson(join(rootPath, "package.json"))
+
+const prompter = await createPrompter()
 
 prompter.insertIntro(`Welcome (v${packageJson.version})`)
 
