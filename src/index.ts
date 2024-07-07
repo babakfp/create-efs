@@ -398,9 +398,7 @@ if (prompts.isInstallDependencies) {
         installSpinner.start("Installing dependencies")
 
         await execAsync(
-            [`cd ${projectClientPath}`, "pnpm up --latest", "pnpm i"].join(
-                " && ",
-            ),
+            [`cd ${projectClientPath}`, "pnpm up --latest"].join(" && "),
         )
 
         installSpinner.stop("Dependencies installed.")
