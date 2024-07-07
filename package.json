@@ -6,9 +6,9 @@
     "main": "./dist/index.js",
     "bin": "./dist/index.js",
     "scripts": {
-        "dev": "tsc -w",
-        "build": "tsc",
-        "prepublishOnly": "tsc",
+        "dev": "rimraf dist && tsc -w",
+        "build": "rimraf dist && tsc",
+        "prepublishOnly": "rimraf dist && tsc",
         "format": "prettier -w ."
     },
     "dependencies": {
@@ -20,6 +20,7 @@
         "@ianvs/prettier-plugin-sort-imports": "4.3.0",
         "@types/node": "20.14.8",
         "prettier": "3.3.2",
+        "rimraf": "5.0.8",
         "typescript": "5.5.2"
     },
     "files": [
