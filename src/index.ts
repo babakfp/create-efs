@@ -19,9 +19,9 @@ import { getLatestReleaseAssets } from "./lib/getLatestReleaseAssets.js"
 import { createPrompter } from "./lib/prompts.js"
 import { unZip } from "./lib/unZip.js"
 
-const prompter = await createPrompter()
-
 const execAsync = promisify(exec)
+
+const prompter = await createPrompter()
 
 const isRunningFromNpmRegistry = !!process.env.npm_config_user_agent
 
