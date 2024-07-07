@@ -307,15 +307,14 @@ if (prompts.chooseTemplate === "with-database") {
     const packageJsonPath = join(projectClientPath, "package.json")
     const packageJsonContent = await readFile(packageJsonPath)
 
-    const newPackageJsonContent = packageJsonContent
-        .toString()
-        .replace(
-            '        "pocketbase": "0.21.2",',
-            [
-                '        "pocketbase": "0.21.2",',
-                '        "pocketbase-auto-generate-types": "1.0.1",',
-            ].join("\n"),
-        )
+    const newPackageJsonContent = packageJsonContent.replace(
+        '        "cssnano": "7.0.3",',
+        [
+            '        "cssnano": "7.0.3",',
+            '        "pocketbase": "0.21.3",',
+            '        "pocketbase-auto-generate-types": "1.0.1",',
+        ].join("\n"),
+    )
 
     const packageJsonJson = JSON.parse(String(newPackageJsonContent))
 
