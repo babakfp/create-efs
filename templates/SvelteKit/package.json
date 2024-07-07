@@ -1,9 +1,8 @@
 {
     "scripts": {
-        "dev": "vite dev",
-        "build": "vite build",
-        "preview": "vite preview",
-        "prepare": "svelte-kit sync",
+        "dev": "svelte-kit sync && vite dev",
+        "build": "svelte-kit sync && vite build",
+        "preview": "svelte-kit sync && vite preview",
         "format": "prettier -w ."
     },
     "devDependencies": {
