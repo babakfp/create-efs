@@ -35,7 +35,7 @@ const prompts = {
     chooseSvelteKitAdapter: "",
     isInstallDependencies: true,
     isGitInitAndCommit: true,
-    isEnvNeeded: true,
+    isEnvNeeded: false,
 }
 
 const ADAPTER_VERSIONS = {
