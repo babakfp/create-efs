@@ -162,7 +162,3 @@ These extensions are useful.
     "workbench.sideBar.location": "right"
 }
 ```
-
-## Fonts
-
-[FontSource](https://fontsource.org).
