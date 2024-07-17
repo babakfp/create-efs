@@ -1,5 +1,7 @@
 # Easy Full Stack
 
+A CLI tool to create SvelteKit apps.
+
 ```bash
 pnpm create efs@latest
 ```
