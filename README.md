@@ -4,6 +4,74 @@
 pnpm create efs@latest
 ```
 
+## Prompts
+
+```
+┌  Welcome (v<VERSION>)
+│
+◆  Name / Path
+│  Hit Enter to use the current directory.
+│
+├────┐
+│    ◆  Directory Not Empty
+│    │  ● Exit
+│    │  ○ Delete and Continue! (This will delete the directory and all its contents.)
+│    │
+│    └────┬────┐
+│         │    ◇  Exit
+│         │    └  Exited.
+│         │
+│         └────┐
+│              ◇  Delete and Continue!
+│              │
+│              ◆  Delete <DIRECTORY>
+│              │  ○ Yes / ● No
+│              │
+│              └────┬────┐
+│                   │    ◇  No
+│                   │    └  Exited.
+│                   │
+│                   ◇  Yes
+│                   │  Project deleted.
+├───────────────────┘
+│
+◆  Template
+│  ● No Database
+│  ○ With Database
+│
+├────┬────┐
+│    │    ◇  No Database
+│    │    │
+│    │    ◆  Environment Variables?
+│    │    │  ○ Yes / ● No
+│    │    │
+│    │    └──────────────────────────────────────────────────┐
+│    │                                                       │
+│    └────┐                                                  │
+│         ◇  With Database                                   │
+│         │                                                  │
+│         ◆  Setup PocketBase for real-time features?        │
+│         │  ○ Yes / ● No                                    │
+│         │                                                  │
+│         ├──────────────────────────────────────────────────┘
+├─────────┘
+│
+◆  Adapter
+│  ● Auto
+│  ○ Node
+│  ○ Static
+│  ○ Vercel
+│  ○ Netlify
+│
+◆  Install Dependencies?
+│  ● Yes / ○ No
+│
+◆  Use Git?
+│  ● Yes / ○ No
+│
+└  Your app is ready.
+```
+
 ## FrontEnd & BackEnd
 
 -   [Svelte](https://svelte.dev)
