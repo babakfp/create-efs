@@ -383,7 +383,7 @@ if (prompts.chooseSvelteKitAdapter !== "@sveltejs/adapter-auto") {
 }
 
 prompts.isInstallDependencies = await prompter.addConfirmPrompt({
-    message: "Install Dependencies",
+    message: "Install Dependencies?",
     initialValue: prompts.isInstallDependencies,
 })
 
