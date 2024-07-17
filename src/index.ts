@@ -91,7 +91,6 @@ if (exists(appPath)) {
             deleteSpinner.start("Deleting project")
 
             await removeDir(appPath)
-            await makeDir(appPath)
 
             deleteSpinner.stop("Project deleted.")
         }
@@ -151,6 +150,8 @@ prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
         },
     ],
 })
+
+await makeDir(appPath)
 
 // Copy SvelteKit template
 
