@@ -151,7 +151,9 @@ prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
     ],
 })
 
-await makeDir(appPath)
+if (prompts.enterNameOrPath !== "") {
+    await makeDir(appPath)
+}
 
 // Copy SvelteKit template
 
