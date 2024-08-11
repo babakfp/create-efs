@@ -123,42 +123,37 @@ These extensions are useful.
 ```json
 {
     // Formatting
-
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
 
-    // Extension: Prettier
+    // Editor
+    "editor.linkedEditing": true,
 
+    // Workbench
+    "workbench.sideBar.location": "right",
+
+    // Extension: Prettier
     "prettier.semi": false,
     "prettier.tabWidth": 4,
 
     // Extension: Inline Fold
-
     "inlineFold.maskChar": "...",
     "inlineFold.unfoldedOpacity": 1,
     "inlineFold.unfoldOnLineSelect": true,
+    "inlineFold.disableInDiffEditor": true,
     "inlineFold.regex": "(class)=\"(.*?)\"",
     "inlineFold.regexGroup": "2",
 
-    // Extension: Tailwind
-
+    // Extension: TailwindCSS
     "tailwindCSS.colorDecorators": false,
     "tailwindCSS.emmetCompletions": true,
 
-    // Extension: Svelte
-
-    "[svelte]": {
-        "editor.defaultFormatter": "svelte.svelte-vscode"
-    },
-
-    // Readonly files
-
-    "files.readonlyInclude": {
-        "**/pnpm-lock.yaml": true
-    },
-
-    // Workbench
-
-    "workbench.sideBar.location": "right"
+    // Extension: Path Intellisense
+    "path-intellisense.extensionOnImport": true,
+    "path-intellisense.autoTriggerNextSuggestion": true,
+    "path-intellisense.autoSlashAfterDirectory": true,
+    "path-intellisense.mappings": {
+        "%sveltekit.assets%": "${workspaceFolder}/static"
+    }
 }
 ```
