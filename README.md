@@ -105,55 +105,67 @@ These extensions are essential.
 These extensions are useful.
 
 -   [Auto Comment Blocks](https://marketplace.visualstudio.com/items?itemName=kevinkyang.auto-comment-blocks)
--   [Auto Rename Tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag)
 -   [Bearded Icons](https://marketplace.visualstudio.com/items?itemName=BeardedBear.beardedicons)
--   [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments)
--   [Compare Folders](https://marketplace.visualstudio.com/items?itemName=moshfeu.compare-folders)
 -   [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
 -   [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
+-   [JSDoc Markdown Highlighting](https://marketplace.visualstudio.com/items?itemName=bierner.jsdoc-markdown-highlighting)
 -   [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
 -   [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
 -   [Pretty TypeScript Errors](https://marketplace.visualstudio.com/items?itemName=yoavbls.pretty-ts-errors)
 -   [Select Line Status Bar](https://marketplace.visualstudio.com/items?itemName=tomoki1207.selectline-statusbar)
 -   [Supermaven](https://marketplace.visualstudio.com/items?itemName=supermaven.supermaven)
 -   [Text Transformer](https://marketplace.visualstudio.com/items?itemName=jackytsu.text-transformer)
+-   [Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)
 
 ## vsCode Config
 
-```json
+```jsonc
 {
     // Formatting
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode", // Install [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extension.
 
     // Editor
-    "editor.linkedEditing": true,
+    "editor.linkedEditing": true, // Edit opening HTML tag, and closing tag will be edited simultaneously (same vise versa). If you have any extension installed that does this, you can uninstall it.
 
     // Workbench
     "workbench.sideBar.location": "right",
 
-    // Extension: Prettier
-    "prettier.semi": false,
-    "prettier.tabWidth": 4,
+    /**
+     * https://github.com/microsoft/vscode/issues/223107#issuecomment-2292519067.
+     * - `src/routes/+page.svelte`:               `+page.svelte`.
+     * - `src/routes/about/+page.svelte`:         `about/+page.svelte`.
+     * - `src/routes/posts/[id]/+page.svelte`:    `posts/[id]/+page.svelte`.
+     */
+    "workbench.editor.customLabels.patterns": {
+        "**/+*.*": "${dirname}/${filename}.${extname}",
+        "**/[[]*[]]/+*.*": "${dirname(1)}/${dirname(0)}/${filename}.${extname}",
+        "**/routes/+*.*": "${filename}.${extname}",
+    },
 
-    // Extension: Inline Fold
+    // Extension: [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+    "prettier.semi": false, // Keep code clean by removing semicolons.
+    "prettier.tabWidth": 4, // Improve readability.
+
+    // Extension: [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
     "inlineFold.maskChar": "...",
     "inlineFold.unfoldedOpacity": 1,
     "inlineFold.unfoldOnLineSelect": true,
     "inlineFold.disableInDiffEditor": true,
+    // Fixed qurly brackets (`{}`) not being folded.
     "inlineFold.regex": "(class)=\"(.*?)\"",
     "inlineFold.regexGroup": "2",
 
-    // Extension: TailwindCSS
-    "tailwindCSS.colorDecorators": false,
+    // Extension: [TailwindCSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+    "tailwindCSS.colorDecorators": false, // Because they don't get folded.
     "tailwindCSS.emmetCompletions": true,
 
-    // Extension: Path Intellisense
+    // Extension: [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
     "path-intellisense.extensionOnImport": true,
     "path-intellisense.autoTriggerNextSuggestion": true,
     "path-intellisense.autoSlashAfterDirectory": true,
     "path-intellisense.mappings": {
-        "%sveltekit.assets%": "${workspaceFolder}/static"
-    }
+        "%sveltekit.assets%": "${workspaceFolder}/static", // You will get intellisense for the static folder after typing `%sveltekit.assets%/`.
+    },
 }
 ```
