@@ -65,11 +65,12 @@ pnpm create efs@latest
 │  ○ Vercel
 │  ○ Netlify
 │
-◆  Install Dependencies?
-│  ● Yes / ○ No
+◆  Simple scaffold?
+│  ○ Yes / ● No
 │
-◆  Use Git?
-│  ● Yes / ○ No
+◇  Dependencies installed.
+│
+◇  Git initialized.
 │
 └  Your app is ready.
 ```
@@ -78,10 +79,10 @@ pnpm create efs@latest
 
 -   [Svelte](https://svelte.dev)
 -   [SvelteKit](https://kit.svelte.dev)
--   [TailwindCSS](https://tailwindcss.com)
+-   [Tailwind](https://tailwindcss.com)
 -   [Prettier](https://prettier.io)
 -   [Prettier Plugin Svelte](https://github.com/sveltejs/prettier-plugin-svelte)
--   [Prettier Plugin TailwindCSS](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
+-   [Prettier Plugin Tailwind](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
 -   [Prettier Plugin Sort Imports](https://github.com/IanVS/prettier-plugin-sort-imports)
 
 ## Storage
@@ -98,7 +99,7 @@ These extensions are essential.
 -   [PostCSS](https://marketplace.visualstudio.com/items?itemName=csstools.postcss)
 -   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 -   [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
--   [TailwindCSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+-   [Tailwind](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 ### General
 
@@ -152,11 +153,11 @@ These extensions are useful.
     "inlineFold.unfoldedOpacity": 1,
     "inlineFold.unfoldOnLineSelect": true,
     "inlineFold.disableInDiffEditor": true,
-    // Fixed qurly brackets (`{}`) not being folded.
+    // Fixes qurly brackets (`{}`) not being folded.
     "inlineFold.regex": "(class)=\"(.*?)\"",
     "inlineFold.regexGroup": "2",
 
-    // Extension: [TailwindCSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+    // Extension: [Tailwind](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
     "tailwindCSS.colorDecorators": false, // Because they don't get folded.
     "tailwindCSS.emmetCompletions": true,
 

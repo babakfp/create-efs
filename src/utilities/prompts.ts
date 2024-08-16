@@ -9,6 +9,12 @@ import {
     text,
 } from "@clack/prompts"
 
+export type RadioPromptOptions = {
+    label: string
+    value: string
+    hint?: string
+}[]
+
 export const createPrompter = async () => {
     const DEFAULT_CANCEL_MESSAGE = "Cancelled."
 
@@ -78,11 +84,7 @@ export const createPrompter = async () => {
     }
 
     const addRadioPrompt = async <
-        T_Options extends {
-            label: string
-            value: string
-            hint?: string
-        }[],
+        T_Options extends RadioPromptOptions,
     >(options: {
         message: string
         options: T_Options

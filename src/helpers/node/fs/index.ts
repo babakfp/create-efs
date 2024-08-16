@@ -1,3 +1,4 @@
+export { join } from "node:path"
 export { existsSync as exists } from "node:fs"
 export {
     writeFile,
@@ -9,6 +10,7 @@ export {
     copyFile,
 } from "node:fs/promises"
 export * from "./editFile.js"
+export * from "./editJson.js"
 export * from "./readFile.js"
 export * from "./readJson.js"
 export * from "./removeDir.js"
