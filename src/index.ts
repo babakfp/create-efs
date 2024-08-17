@@ -365,6 +365,10 @@ try {
 
     const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
 
+    if (prompts.chooseTemplate === "with-database") {
+        commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
+    }
+
     if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
         commands.push(
             ...[
@@ -376,10 +380,6 @@ try {
 
     if (prompts.isSimpleScaffold) {
         commands.push("pnpm add -D remeda")
-    }
-
-    if (prompts.chooseTemplate === "with-database") {
-        commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
     }
 
     await exec(commands.join(" && "))
