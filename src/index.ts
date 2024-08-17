@@ -20,6 +20,7 @@ import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
 import { unZip } from "./utilities/unZip.js"
 
 const isUaNode = !process.env.npm_config_user_agent
+const isUaPnpm = process.env.npm_config_user_agent?.includes("pnpm")
 const uaCwd = isUaNode ? process.cwd() : join(import.meta.dirname, "..")
 
 const prompts: {
@@ -48,6 +49,10 @@ const prompter = await createPrompter()
 const spinner = prompter.createSpinner()
 
 prompter.insertIntro(`Welcome (v${version})`)
+
+if (!isUaNode && !isUaPnpm) {
+    prompter.exit("Only PNPM is supported.")
+}
 
 prompts.enterNameOrPath = await prompter.addTextPrompt({
     message: "Name / Path",
