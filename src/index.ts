@@ -20,7 +20,7 @@ import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
 import { unZip } from "./utilities/unZip.js"
 
 const isUaNode = !process.env.npm_config_user_agent
-const isUaPnpm = process.env.npm_config_user_agent?.includes("pnpm")
+const isUaPnpm = !!process.env.npm_config_user_agent?.includes("pnpm")
 const uaCwd = isUaNode ? process.cwd() : join(import.meta.dirname, "..")
 
 const prompts: {
