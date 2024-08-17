@@ -59,7 +59,7 @@ prompts.enterNameOrPath = await prompter.addTextPrompt({
     placeholder: "Hit Enter to use the current directory.",
 })
 
-const appPath = join(process.cwd(), prompts.enterNameOrPath)
+const appCwd = join(process.cwd(), prompts.enterNameOrPath)
 
 const PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS = [
     { label: "Exit", value: "exit" },
@@ -70,8 +70,8 @@ const PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS = [
     },
 ] as const satisfies RadioPromptOptions
 
-if (exists(appPath)) {
-    const projectDirFiles = await readDir(appPath)
+if (exists(appCwd)) {
+    const projectDirFiles = await readDir(appCwd)
 
     if (projectDirFiles.length) {
         prompts.chooseWhatIfDirectoryNotEmpty = await prompter.addRadioPrompt({
@@ -83,7 +83,7 @@ if (exists(appPath)) {
             prompter.exit("Exited.")
         } else if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
             const areYouSure = await prompter.addConfirmPrompt({
-                message: `Delete ${appPath}`,
+                message: `Delete ${appCwd}`,
                 initialValue: false,
             })
 
@@ -92,7 +92,7 @@ if (exists(appPath)) {
             }
 
             spinner.start("Deleting project")
-            await removeDir(appPath)
+            await removeDir(appCwd)
             spinner.stop("Project deleted.")
         }
     }
@@ -114,8 +114,8 @@ prompts.chooseTemplate = await prompter.addRadioPrompt({
     options: PROMPT_CHOOSE_TEMPLATE_OPTIONS,
 })
 
-const clientPath =
-    prompts.chooseTemplate === "no-database" ? appPath : join(appPath, "client")
+const clientCwd =
+    prompts.chooseTemplate === "no-database" ? appCwd : join(appCwd, "client")
 
 if (prompts.chooseTemplate === "no-database") {
     prompts.isEnvNeeded = await prompter.addConfirmPrompt({
@@ -154,22 +154,22 @@ prompts.isSimpleScaffold = await prompter.addConfirmPrompt({
 })
 
 if (prompts.enterNameOrPath !== "") {
-    await makeDir(appPath)
+    await makeDir(appCwd)
 }
 
-await copyDir(join(uaCwd, "templates", "SvelteKit"), clientPath, {
+await copyDir(join(uaCwd, "templates", "SvelteKit"), clientCwd, {
     recursive: true,
 })
 
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
-await rename(join(clientPath, "..gitignore"), join(clientPath, ".gitignore"))
-await rename(join(clientPath, "..npmrc"), join(clientPath, ".npmrc"))
+await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
+await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
 
 if (
     prompts.chooseTemplate === "with-database" ||
     (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded)
 ) {
-    await editFile(join(clientPath, ".gitignore"), (content) =>
+    await editFile(join(clientCwd, ".gitignore"), (content) =>
         appendLines(content, "/.svelte-kit/", [
             "/.env",
             "/.env.*",
@@ -179,12 +179,12 @@ if (
 }
 
 if (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded) {
-    await writeFile(join(clientPath, ".env"), "")
-    await writeFile(join(clientPath, ".env.example"), "")
+    await writeFile(join(clientCwd, ".env"), "")
+    await writeFile(join(clientCwd, ".env.example"), "")
 }
 
 if (prompts.chooseTemplate === "with-database") {
-    await copyDir(join(uaCwd, "templates", "PocketBase Client"), clientPath, {
+    await copyDir(join(uaCwd, "templates", "PocketBase Client"), clientCwd, {
         recursive: true,
     })
 
@@ -205,12 +205,12 @@ if (prompts.chooseTemplate === "with-database") {
         return content
     }
 
-    await writeFile(join(clientPath, ".env"), getEnvFileContent())
-    await writeFile(join(clientPath, ".env.example"), getEnvFileContent())
+    await writeFile(join(clientCwd, ".env"), getEnvFileContent())
+    await writeFile(join(clientCwd, ".env.example"), getEnvFileContent())
 
     // --- PocketBase
 
-    await copyDir(join(uaCwd, "templates", "PocketBase"), appPath, {
+    await copyDir(join(uaCwd, "templates", "PocketBase"), appCwd, {
         recursive: true,
     })
 
@@ -237,7 +237,7 @@ if (prompts.chooseTemplate === "with-database") {
 
         const pbVersion = selectedPbReleaseName.split("_")[1]
 
-        await editFile(join(appPath, "storage", "Dockerfile"), (content) =>
+        await editFile(join(appCwd, "storage", "Dockerfile"), (content) =>
             content.replace(
                 "ARG PB_VERSION=0.22.12",
                 `ARG PB_VERSION=${pbVersion}`,
@@ -250,7 +250,7 @@ if (prompts.chooseTemplate === "with-database") {
 
         const downloader = new Downloader({
             url: downloadUrl,
-            directory: join(appPath, "storage"),
+            directory: join(appCwd, "storage"),
         })
 
         let isDownloadSeccessful = false
@@ -266,7 +266,7 @@ if (prompts.chooseTemplate === "with-database") {
         }
 
         if (isDownloadSeccessful) {
-            await unZip(join(appPath, "storage", selectedPbReleaseName))
+            await unZip(join(appCwd, "storage", selectedPbReleaseName))
         }
     }
 
@@ -285,7 +285,7 @@ if (prompts.chooseTemplate === "with-database") {
         value: `pocketbase-auto-generate-types -u ${envPublicPrefix}PB_URL -e PB_EMAIL -p PB_PASSWORD -o ${typeGenOutputPath}`,
     }
 
-    await editJson(join(clientPath, "package.json"), (json) => {
+    await editJson(join(clientCwd, "package.json"), (json) => {
         json.scripts[pbTypeGenScript.key] = pbTypeGenScript.value
         return json
     })
@@ -294,13 +294,13 @@ if (prompts.chooseTemplate === "with-database") {
 // ---
 
 if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
-    await editFile(join(clientPath, "svelte.config.js"), (content) =>
+    await editFile(join(clientCwd, "svelte.config.js"), (content) =>
         content.replace(ADAPTERS.Auto, prompts.chooseSvelteKitAdapter),
     )
 
     // ---
 
-    await editFile(join(clientPath, ".gitignore"), (content) => {
+    await editFile(join(clientCwd, ".gitignore"), (content) => {
         const replaceWith: string[] = []
 
         if (
@@ -330,7 +330,7 @@ if (prompts.isSimpleScaffold) {
             "SvelteKit Simple Scaffold",
             "tailwind.config.ts",
         ),
-        join(clientPath, "tailwind.config.ts"),
+        join(clientCwd, "tailwind.config.ts"),
     )
     await copyFile(
         join(
@@ -340,7 +340,7 @@ if (prompts.isSimpleScaffold) {
             "src",
             "app.html",
         ),
-        join(clientPath, "src", "app.html"),
+        join(clientCwd, "src", "app.html"),
     )
     await copyFile(
         join(
@@ -351,11 +351,11 @@ if (prompts.isSimpleScaffold) {
             "lib",
             "app.css",
         ),
-        join(clientPath, "src", "lib", "app.css"),
+        join(clientCwd, "src", "lib", "app.css"),
     )
     await copyDir(
         join(uaCwd, "templates", "SvelteKit Simple Scaffold", "static"),
-        join(clientPath, "static"),
+        join(clientCwd, "static"),
         { recursive: true },
     )
 }
@@ -363,7 +363,7 @@ if (prompts.isSimpleScaffold) {
 try {
     spinner.start("Installing dependencies")
 
-    const commands = [`cd ${clientPath}`, "pnpm up --latest"]
+    const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
 
     if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
         commands.push(
@@ -386,7 +386,7 @@ try {
 
     spinner.stop("Dependencies installed.")
 } catch (e) {
-    await removeDir(appPath)
+    await removeDir(appCwd)
 
     spinner.stop(
         "Dependency installation failed. Please try again.",
@@ -399,7 +399,7 @@ try {
 
     await exec(
         [
-            `cd ${clientPath}`,
+            `cd ${clientCwd}`,
             "git init",
             "git add .",
             'git commit -m "First commit"',
