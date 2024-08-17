@@ -16,6 +16,7 @@ import {
 } from "./helpers/node/fs/index.js"
 import { appendLines } from "./utilities/appendLines.js"
 import { getLatestReleaseAssets } from "./utilities/getLatestReleaseAssets.js"
+import { isPathValid } from "./utilities/isPathValid.js"
 import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
 import { unZip } from "./utilities/unZip.js"
 
@@ -57,6 +58,11 @@ if (!isUaNode && !isUaPnpm) {
 prompts.enterNameOrPath = await prompter.addTextPrompt({
     message: "Name / Path",
     placeholder: "Hit Enter to use the current directory.",
+    validate: (input) => {
+        if (!isPathValid(input)) {
+            return "Invalid!"
+        }
+    },
 })
 
 const appCwd = join(process.cwd(), prompts.enterNameOrPath)

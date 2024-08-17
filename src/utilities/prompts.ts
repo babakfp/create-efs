@@ -26,7 +26,7 @@ export const createPrompter = async () => {
             throw new Error("Only one intro can be inserted.")
         }
 
-        console.log()
+        console.log() // Intentionally left blank line.
         intro(message)
     }
 
@@ -51,10 +51,12 @@ export const createPrompter = async () => {
         message: string
         placeholder?: string
         cancelMessage?: string
+        validate?: Parameters<typeof text>[0]["validate"]
     }) => {
         const input = await text({
             message: options.message,
             placeholder: options.placeholder,
+            validate: options.validate,
         })
 
         if (isCancel(input)) {
