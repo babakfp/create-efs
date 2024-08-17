@@ -26,7 +26,7 @@ export const createPrompter = async () => {
             throw new Error("Only one intro can be inserted.")
         }
 
-        console.log()
+        console.log() // Intentionally left blank line.
         intro(message)
     }
 
