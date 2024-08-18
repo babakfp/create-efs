@@ -30,6 +30,7 @@ const prompts: {
     isRealTimePbNeeded: boolean
     chooseSvelteKitAdapter: (typeof ADAPTERS)[keyof typeof ADAPTERS]
     isSimpleScaffold: boolean
+    isGitInitAndCommit: boolean
     isEnvNeeded: boolean
 } = {
     enterNameOrPath: "",
@@ -38,6 +39,7 @@ const prompts: {
     isRealTimePbNeeded: false,
     chooseSvelteKitAdapter: "@sveltejs/adapter-auto",
     isSimpleScaffold: false,
+    isGitInitAndCommit: true,
     isEnvNeeded: false,
 }
 
@@ -394,21 +396,28 @@ try {
     )
 }
 
-try {
-    spinner.start("Initializing Git")
+prompts.isGitInitAndCommit = await prompter.addConfirmPrompt({
+    message: "Use Git?",
+    initialValue: prompts.isGitInitAndCommit,
+})
 
-    await exec(
-        [
-            `cd ${clientCwd}`,
-            "git init",
-            "git add .",
-            'git commit -m "First commit"',
-        ].join(" && "),
-    )
+if (prompts.isGitInitAndCommit) {
+    try {
+        spinner.start("Initializing Git")
 
-    spinner.stop("Git initialized.")
-} catch (e) {
-    spinner.stop("Git initialization failed.", (e as ExecException).code)
+        await exec(
+            [
+                `cd ${clientCwd}`,
+                "git init",
+                "git add .",
+                'git commit -m "First commit"',
+            ].join(" && "),
+        )
+
+        spinner.stop("Git initialized.")
+    } catch (e) {
+        spinner.stop("Git initialization failed.", (e as ExecException).code)
+    }
 }
 
 prompter.insertOutro("Your app is ready.")
