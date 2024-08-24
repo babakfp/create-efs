@@ -378,6 +378,10 @@ try {
                 `pnpm add -D ${prompts.chooseSvelteKitAdapter}`,
             ],
         )
+
+        if (prompts.chooseSvelteKitAdapter === ADAPTERS.Node) {
+            commands.push("pnpm add -D @types/node")
+        }
     }
 
     if (prompts.isSimpleScaffold) {
