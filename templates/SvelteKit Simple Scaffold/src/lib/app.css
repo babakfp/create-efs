@@ -10,6 +10,6 @@
 
 @layer utilities {
     .container {
-        @apply max-w-screen-md;
+        @apply max-w-screen-xl;
     }
 }
