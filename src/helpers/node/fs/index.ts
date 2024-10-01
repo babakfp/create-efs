@@ -1,4 +1,4 @@
-export { join } from "node:path"
+export { join } from "node:path/posix"
 export { existsSync as exists } from "node:fs"
 export {
     writeFile,
