@@ -9,7 +9,7 @@ pnpm create efs@latest
 ## Prompts
 
 ```
-┌  Welcome (v<VERSION>)
+┌  Easy Full Stack
 │
 ◆  Name / Path
 │  Hit Enter to use the current directory.

@@ -1,4 +1,5 @@
 import { Downloader } from "nodejs-file-downloader"
+import color from "picocolors"
 import { exec, type ExecException } from "./helpers/node/child-process/index.js"
 import {
     copyDir,
@@ -50,7 +51,10 @@ const { version }: { version: string } = await readJson(
 const prompter = await createPrompter()
 const spinner = prompter.createSpinner()
 
-prompter.insertIntro(`Welcome (v${version})`, true)
+prompter.insertIntro(
+    `${color.bgCyan(color.black(` Easy Full Stack `))}  v${version}`,
+    true,
+)
 
 if (!isUaNode && !isUaPnpm) {
     prompter.exit("Only PNPM is supported.")

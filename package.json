@@ -15,7 +15,8 @@
     "dependencies": {
         "@clack/prompts": "0.7.0",
         "node-stream-zip": "1.15.0",
-        "nodejs-file-downloader": "4.13.0"
+        "nodejs-file-downloader": "4.13.0",
+        "picocolors": "1.1.0"
     },
     "devDependencies": {
         "@ianvs/prettier-plugin-sort-imports": "4.3.1",
