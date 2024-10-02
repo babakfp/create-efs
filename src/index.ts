@@ -350,6 +350,16 @@ if (prompts.isSimpleScaffold) {
             "templates",
             "SvelteKit Simple Scaffold",
             "src",
+            "error.html",
+        ),
+        join(clientCwd, "src", "error.html"),
+    )
+    await copyFile(
+        join(
+            uaCwd,
+            "templates",
+            "SvelteKit Simple Scaffold",
+            "src",
             "lib",
             "app.css",
         ),

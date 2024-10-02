@@ -3,7 +3,9 @@
         "dev": "svelte-kit sync && vite dev",
         "build": "svelte-kit sync && vite build",
         "preview": "svelte-kit sync && vite preview",
-        "format": "prettier -w ."
+        "format": "prettier -w .",
+        "error-watch": "tailwindcss -i src/lib/app.css -o static/error.css --content src/error.html -m -w",
+        "error-build": "tailwindcss -i src/lib/app.css -o static/error.css --content src/error.html -m"
     },
     "devDependencies": {
         "@ianvs/prettier-plugin-sort-imports": "4.3.0",
