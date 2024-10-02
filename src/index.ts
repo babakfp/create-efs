@@ -18,6 +18,7 @@ import {
 import { appendLines } from "./utilities/appendLines.js"
 import { getLatestReleaseAssets } from "./utilities/getLatestReleaseAssets.js"
 import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
+import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
 
 const isUaNode = !process.env.npm_config_user_agent
@@ -49,7 +50,7 @@ const { version }: { version: string } = await readJson(
 )
 
 const prompter = await createPrompter()
-const spinner = prompter.createSpinner()
+const spinner = createSpinner()
 
 prompter.insertIntro(
     `${color.bgCyan(color.black(` Easy Full Stack `))}  v${version}`,
