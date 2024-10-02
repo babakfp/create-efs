@@ -50,7 +50,7 @@ const { version }: { version: string } = await readJson(
 const prompter = await createPrompter()
 const spinner = prompter.createSpinner()
 
-prompter.insertIntro(`Welcome (v${version})`)
+prompter.insertIntro(`Welcome (v${version})`, true)
 
 if (!isUaNode && !isUaPnpm) {
     prompter.exit("Only PNPM is supported.")

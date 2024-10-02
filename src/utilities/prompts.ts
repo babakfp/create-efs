@@ -21,12 +21,17 @@ export const createPrompter = async () => {
     let countInsertedIntro = 0
     let countInsertedOutro = 0
 
-    const insertIntro = (message: string) => {
+    const insertIntro = (message: string, clear = false) => {
         if (countInsertedIntro > 1) {
             throw new Error("Only one intro can be inserted.")
         }
 
-        console.log() // Intentionally left blank line.
+        if (clear) {
+            console.clear()
+        } else {
+            console.log() // Intentionally left blank line.
+        }
+
         intro(message)
     }
 
