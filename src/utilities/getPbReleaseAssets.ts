@@ -1,7 +1,7 @@
 import { arch } from "node:os"
 import { dummyLatestReleaseData } from "./dummyLatestReleaseData.js"
 
-export const getLatestReleaseAssets = async (useDummyData = false) => {
+export const getPbReleaseAssets = async (useDummyData = false) => {
     let data = dummyLatestReleaseData
 
     if (!useDummyData) {

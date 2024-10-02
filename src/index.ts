@@ -17,7 +17,7 @@ import {
     type ExecException,
 } from "./helpers/node/index.js"
 import { appendLines } from "./utilities/appendLines.js"
-import { getLatestReleaseAssets } from "./utilities/getLatestReleaseAssets.js"
+import { getPbReleaseAssets } from "./utilities/getPbReleaseAssets.js"
 import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
 import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
@@ -210,7 +210,7 @@ if (prompts.useDatabase) {
     // --- Download PocketBase Executable
 
     spinner.start("Fetching PocketBase latest release assets")
-    const pbReleases = await getLatestReleaseAssets()
+    const pbReleases = await getPbReleaseAssets()
     spinner.stop("PocketBase downloaded.")
 
     if (pbReleases.length) {
