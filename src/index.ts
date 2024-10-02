@@ -1,11 +1,11 @@
 import { Downloader } from "nodejs-file-downloader"
 import color from "picocolors"
-import { exec, type ExecException } from "./helpers/node/child-process/index.js"
 import {
     copyDir,
     copyFile,
     editFile,
     editJson,
+    exec,
     exists,
     join,
     makeDir,
@@ -14,7 +14,8 @@ import {
     removeDir,
     rename,
     writeFile,
-} from "./helpers/node/fs/index.js"
+    type ExecException,
+} from "./helpers/node/index.js"
 import { appendLines } from "./utilities/appendLines.js"
 import { getLatestReleaseAssets } from "./utilities/getLatestReleaseAssets.js"
 import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
