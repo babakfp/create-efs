@@ -28,7 +28,7 @@ const uaCwd = isUaNode ? process.cwd() : join(import.meta.dirname, "..")
 const prompts: {
     enterNameOrPath: string
     chooseWhatIfDirectoryNotEmpty: (typeof PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS)[number]["value"]
-    chooseTemplate: (typeof PROMPT_CHOOSE_TEMPLATE_OPTIONS)[number]["value"]
+    useDatabase: boolean
     isRealTimePbNeeded: boolean
     chooseSvelteKitAdapter: (typeof ADAPTERS)[keyof typeof ADAPTERS]
     isSimpleScaffold: boolean
@@ -37,7 +37,7 @@ const prompts: {
 } = {
     enterNameOrPath: "",
     chooseWhatIfDirectoryNotEmpty: "exit",
-    chooseTemplate: "no-database",
+    useDatabase: false,
     isRealTimePbNeeded: false,
     chooseSvelteKitAdapter: "@sveltejs/adapter-auto",
     isSimpleScaffold: false,
@@ -105,33 +105,21 @@ if (exists(appCwd)) {
     }
 }
 
-const PROMPT_CHOOSE_TEMPLATE_OPTIONS = [
-    {
-        label: "No Database",
-        value: "no-database",
-    },
-    {
-        label: "With Database",
-        value: "with-database",
-    },
-] as const satisfies RadioPromptOptions
-
-prompts.chooseTemplate = await prompter.addRadioPrompt({
-    message: "Template",
-    options: PROMPT_CHOOSE_TEMPLATE_OPTIONS,
+prompts.useDatabase = await prompter.addConfirmPrompt({
+    message: "Use Database?",
+    initialValue: prompts.useDatabase,
 })
 
-const clientCwd =
-    prompts.chooseTemplate === "no-database" ? appCwd : join(appCwd, "client")
+const clientCwd = !prompts.useDatabase ? appCwd : join(appCwd, "client")
 
-if (prompts.chooseTemplate === "no-database") {
+if (!prompts.useDatabase) {
     prompts.isEnvNeeded = await prompter.addConfirmPrompt({
         message: "Environment Variables?",
         initialValue: prompts.isEnvNeeded,
     })
 }
 
-if (prompts.chooseTemplate === "with-database") {
+if (prompts.useDatabase) {
     prompts.isRealTimePbNeeded = await prompter.addConfirmPrompt({
         message: "Setup PocketBase for real-time features?",
         initialValue: prompts.isRealTimePbNeeded,
@@ -172,10 +160,7 @@ await copyDir(join(uaCwd, "templates", "SvelteKit"), clientCwd, {
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
 await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
 
-if (
-    prompts.chooseTemplate === "with-database" ||
-    (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded)
-) {
+if (prompts.useDatabase || (!prompts.useDatabase && prompts.isEnvNeeded)) {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
         appendLines(content, "/.svelte-kit/", [
             "/.env",
@@ -185,12 +170,12 @@ if (
     )
 }
 
-if (prompts.chooseTemplate === "no-database" && prompts.isEnvNeeded) {
+if (!prompts.useDatabase && prompts.isEnvNeeded) {
     await writeFile(join(clientCwd, ".env"), "")
     await writeFile(join(clientCwd, ".env.example"), "")
 }
 
-if (prompts.chooseTemplate === "with-database") {
+if (prompts.useDatabase) {
     await copyDir(join(uaCwd, "templates", "PocketBase Client"), clientCwd, {
         recursive: true,
     })
@@ -382,7 +367,7 @@ try {
 
     const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
 
-    if (prompts.chooseTemplate === "with-database") {
+    if (prompts.useDatabase) {
         commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
     }
 

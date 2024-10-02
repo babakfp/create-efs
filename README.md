@@ -37,12 +37,11 @@ pnpm create efs@latest
 │                   │  Project deleted.
 ├───────────────────┘
 │
-◆  Template
-│  ● No Database
-│  ○ With Database
+◆  Use Database?
+│  ○ Yes / ● No
 │
 ├────┬────┐
-│    │    ◇  No Database
+│    │    ◇  No
 │    │    │
 │    │    ◆  Environment Variables?
 │    │    │  ○ Yes / ● No
@@ -50,7 +49,7 @@ pnpm create efs@latest
 │    │    └──────────────────────────────────────────────────┐
 │    │                                                       │
 │    └────┐                                                  │
-│         ◇  With Database                                   │
+│         ◇  Yes                                             │
 │         │                                                  │
 │         ◆  Setup PocketBase for real-time features?        │
 │         │  ○ Yes / ● No                                    │
