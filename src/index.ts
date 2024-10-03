@@ -1,3 +1,4 @@
+import ignore from "ignore"
 import { Downloader } from "nodejs-file-downloader"
 import color from "picocolors"
 import {
@@ -10,9 +11,12 @@ import {
     join,
     makeDir,
     readDir,
+    readFile,
     readJson,
+    relative,
     removeDir,
     rename,
+    toPosix,
     writeFile,
     type ExecException,
 } from "./helpers/node/index.js"
@@ -90,7 +94,7 @@ if (exists(appCwd)) {
             prompter.exit("Exited.")
         } else if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
             const areYouSure = await prompter.addConfirmPrompt({
-                message: `Delete ${appCwd}`,
+                message: `Delete ${toPosix(appCwd)}`,
                 initialValue: false,
             })
 
@@ -100,7 +104,7 @@ if (exists(appCwd)) {
 
             spinner.start("Deleting project")
             await removeDir(appCwd)
-            spinner.stop("Project deleted.")
+            spinner.stop("Directory deleted.")
         }
     }
 }
@@ -148,15 +152,31 @@ prompts.isSimpleScaffold = await prompter.addConfirmPrompt({
     initialValue: prompts.isSimpleScaffold,
 })
 
-if (prompts.enterNameOrPath !== "") {
+if (prompts.enterNameOrPath !== "" && !exists(appCwd)) {
     await makeDir(appCwd)
 }
 
-await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd)
+const ig = ignore.default().add(
+    (await readFile(join(cmd, ".gitignore")))
+        .split("\n")
+        .map((line) => line.trim())
+        .map((line) => (line.endsWith("/") ? line.slice(0, -1) : line)),
+)
+
+spinner.start("Doing IO operations")
+await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd, {
+    filter: (from) => {
+        const path = toPosix(join(relative(toPosix(cmd), toPosix(from)), "/"))
+        const isIgnored = ig.ignores(path)
+        const isCopy = !isIgnored
+        return isCopy
+    },
+})
 
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
 await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
+spinner.stop("IO operations done.")
 
 if (prompts.useDatabase || (!prompts.useDatabase && prompts.isEnvNeeded)) {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
