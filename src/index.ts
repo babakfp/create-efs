@@ -389,7 +389,7 @@ try {
 }
 
 prompts.git = await prompter.addConfirmPrompt({
-    message: "Use Git?",
+    message: "Git",
     initialValue: prompts.git,
 })
 

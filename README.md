@@ -60,7 +60,7 @@ pnpm create efs@latest
 │
 ◇  Dependencies installed.
 │
-◆  Use Git?
+◆  Git
 │  ● Yes / ○ No
 │
 └  Your app is ready.
