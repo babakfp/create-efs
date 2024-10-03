@@ -80,9 +80,7 @@ const PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS = [
 ] as const satisfies RadioPromptOptions
 
 if (exists(appCwd)) {
-    const projectDirFiles = await readDir(appCwd)
-
-    if (projectDirFiles.length) {
+    if ((await readDir(appCwd)).length) {
         prompts.chooseWhatIfDirectoryNotEmpty = await prompter.addRadioPrompt({
             message: "Directory Not Empty",
             options: PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS,
