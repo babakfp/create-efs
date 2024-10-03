@@ -19,14 +19,13 @@ pnpm create efs@latest
 │    │  ● Exit
 │    │  ○ Delete! ( <DIRECTORY> )
 │    │
-│    └────┬────┐
-│         │    ◇  Exit
-│         │    └  Exited.
-│         │
-│         └────┐
-│              ◇  Delete!
-│              │  Directory deleted.
-├──────────────┘
+│    ├────┐
+│    │    ◇  Exit
+│    │    └  Exited.
+│    │
+│    ◇  Delete!
+│    │  Directory deleted.
+├────┘
 │
 ◆  Database
 │  ○ Yes / ● No
@@ -37,16 +36,14 @@ pnpm create efs@latest
 │    │    ◆  Env
 │    │    │  ○ Yes / ● No
 │    │    │
-│    │    └───────────────────────────┐
-│    │                                │
-│    └────┐                           │
-│         ◇  Yes                      │
-│         │                           │
-│         ◆  Realtime Database        │
-│         │  ○ Yes / ● No             │
-│         │                           │
-│         ├───────────────────────────┘
-├─────────┘
+│    │    └──────────────────────┐
+│    │                           │
+│    ◇  Yes                      │
+│    │                           │
+│    ◆  Realtime Database        │
+│    │  ○ Yes / ● No             │
+│    │                           │
+├────┴───────────────────────────┘
 │
 ◆  Adapter
 │  ● Auto
@@ -70,10 +67,10 @@ pnpm create efs@latest
 
 -   [Svelte](https://svelte.dev)
 -   [SvelteKit](https://kit.svelte.dev)
--   [Tailwind](https://tailwindcss.com)
+-   [Tailwind CSS](https://tailwindcss.com)
 -   [Prettier](https://prettier.io)
 -   [Prettier Plugin Svelte](https://github.com/sveltejs/prettier-plugin-svelte)
--   [Prettier Plugin Tailwind](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
+-   [Prettier Plugin Tailwind CSS](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
 -   [Prettier Plugin Sort Imports](https://github.com/IanVS/prettier-plugin-sort-imports)
 
 ## Storage
@@ -90,7 +87,7 @@ These extensions are essential.
 -   [PostCSS](https://marketplace.visualstudio.com/items?itemName=csstools.postcss)
 -   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 -   [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
--   [Tailwind](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+-   [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 ### General
 
@@ -148,7 +145,7 @@ These extensions are useful.
     "inlineFold.regex": "(class)=\"(.*?)\"",
     "inlineFold.regexGroup": "2",
 
-    // Extension: [Tailwind](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+    // Extension: [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
     "tailwindCSS.colorDecorators": false, // Because they don't get folded.
     "tailwindCSS.emmetCompletions": true,
 
