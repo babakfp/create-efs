@@ -123,13 +123,12 @@ const SVELTE_ADAPTERS = {
     Vercel: "@sveltejs/adapter-vercel",
 } as const
 
-const PROMPT_SVELTE_ADAPTER_OPTIONS = Object.entries(SVELTE_ADAPTERS).map(
-    ([label, value]) => ({ label, value }),
-) satisfies RadioPromptOptions
-
 prompts.svelteAdapter = await prompter.addRadioPrompt({
     message: "Adapter",
-    options: PROMPT_SVELTE_ADAPTER_OPTIONS,
+    options: Object.entries(SVELTE_ADAPTERS).map(([label, value]) => ({
+        label,
+        value,
+    })),
 })
 
 prompts.scaffold = await prompter.addConfirmPrompt({
