@@ -22,9 +22,10 @@ import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
 import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
 
-const isUaNode = !process.env.npm_config_user_agent
-const isUaPnpm = !!process.env.npm_config_user_agent?.includes("pnpm")
-const uaCwd = isUaNode ? process.cwd() : join(import.meta.dirname, "..")
+const isNode = !process.env.npm_config_user_agent
+const isPnpm = !!process.env.npm_config_user_agent?.includes("pnpm")
+/** Current module directory. */
+const cmd = isNode ? process.cwd() : join(import.meta.dirname, "..")
 
 const prompts: {
     enterNameOrPath: string
@@ -47,7 +48,7 @@ const prompts: {
 }
 
 const { version }: { version: string } = await readJson(
-    join(uaCwd, "package.json"),
+    join(cmd, "package.json"),
 )
 
 const prompter = await createPrompter()
@@ -58,7 +59,7 @@ prompter.insertIntro(
     true,
 )
 
-if (!isUaNode && !isUaPnpm) {
+if (!isNode && !isPnpm) {
     prompter.exit("Only PNPM is supported.")
 }
 
@@ -153,7 +154,7 @@ if (prompts.enterNameOrPath !== "") {
     await makeDir(appCwd)
 }
 
-await copyDir(join(uaCwd, "templates", "SvelteKit"), clientCwd, {
+await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd, {
     recursive: true,
 })
 
@@ -177,7 +178,7 @@ if (!prompts.useDatabase && prompts.isEnvNeeded) {
 }
 
 if (prompts.useDatabase) {
-    await copyDir(join(uaCwd, "templates", "PocketBase Client"), clientCwd, {
+    await copyDir(join(cmd, "templates", "PocketBase Client"), clientCwd, {
         recursive: true,
     })
 
@@ -203,7 +204,7 @@ if (prompts.useDatabase) {
 
     // --- PocketBase
 
-    await copyDir(join(uaCwd, "templates", "PocketBase"), appCwd, {
+    await copyDir(join(cmd, "templates", "PocketBase"), appCwd, {
         recursive: true,
     })
 
@@ -318,7 +319,7 @@ if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
 if (prompts.isSimpleScaffold) {
     await copyFile(
         join(
-            uaCwd,
+            cmd,
             "templates",
             "SvelteKit Simple Scaffold",
             "tailwind.config.ts",
@@ -326,18 +327,12 @@ if (prompts.isSimpleScaffold) {
         join(clientCwd, "tailwind.config.ts"),
     )
     await copyFile(
-        join(
-            uaCwd,
-            "templates",
-            "SvelteKit Simple Scaffold",
-            "src",
-            "app.html",
-        ),
+        join(cmd, "templates", "SvelteKit Simple Scaffold", "src", "app.html"),
         join(clientCwd, "src", "app.html"),
     )
     await copyFile(
         join(
-            uaCwd,
+            cmd,
             "templates",
             "SvelteKit Simple Scaffold",
             "src",
@@ -347,7 +342,7 @@ if (prompts.isSimpleScaffold) {
     )
     await copyFile(
         join(
-            uaCwd,
+            cmd,
             "templates",
             "SvelteKit Simple Scaffold",
             "src",
@@ -357,7 +352,7 @@ if (prompts.isSimpleScaffold) {
         join(clientCwd, "src", "lib", "app.css"),
     )
     await copyDir(
-        join(uaCwd, "templates", "SvelteKit Simple Scaffold", "static"),
+        join(cmd, "templates", "SvelteKit Simple Scaffold", "static"),
         join(clientCwd, "static"),
         { recursive: true },
     )
