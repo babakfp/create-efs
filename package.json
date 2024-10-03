@@ -4,9 +4,9 @@
     "version": "0.20.0",
     "license": "MIT",
     "scripts": {
-        "dev": "pnpm build -w",
+        "dev": "rimraf dist && tsc -w",
         "build": "rimraf dist && tsc",
-        "prepublishOnly": "pnpm build",
+        "prepublishOnly": "rimraf dist && tsc",
         "format": "prettier -w ."
     },
     "dependencies": {
