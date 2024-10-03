@@ -152,9 +152,7 @@ if (prompts.enterNameOrPath !== "") {
     await makeDir(appCwd)
 }
 
-await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd, {
-    recursive: true,
-})
+await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd)
 
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
@@ -176,9 +174,7 @@ if (!prompts.useDatabase && prompts.isEnvNeeded) {
 }
 
 if (prompts.useDatabase) {
-    await copyDir(join(cmd, "templates", "PocketBase Client"), clientCwd, {
-        recursive: true,
-    })
+    await copyDir(join(cmd, "templates", "PocketBase Client"), clientCwd)
 
     // ---
 
@@ -202,9 +198,7 @@ if (prompts.useDatabase) {
 
     // --- PocketBase
 
-    await copyDir(join(cmd, "templates", "PocketBase"), appCwd, {
-        recursive: true,
-    })
+    await copyDir(join(cmd, "templates", "PocketBase"), appCwd)
 
     // --- Download PocketBase Executable
 
@@ -352,7 +346,6 @@ if (prompts.isSimpleScaffold) {
     await copyDir(
         join(cmd, "templates", "SvelteKit Simple Scaffold", "static"),
         join(clientCwd, "static"),
-        { recursive: true },
     )
 }
 
