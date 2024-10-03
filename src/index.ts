@@ -81,7 +81,7 @@ if (exists(appCwd)) {
                 {
                     label: "Delete and Continue!",
                     value: "delete",
-                    hint: "This will delete the directory and all its contents.",
+                    hint: ` ${toPosix(appCwd)} `,
                 },
             ],
         })
@@ -89,15 +89,6 @@ if (exists(appCwd)) {
         if (dirNotEmpty === "exit") {
             prompter.exit("Exited.")
         } else if (dirNotEmpty === "delete") {
-            const areYouSure = await prompter.addConfirmPrompt({
-                message: `Delete ${toPosix(appCwd)}`,
-                initialValue: false,
-            })
-
-            if (!areYouSure) {
-                prompter.exit("Exited.")
-            }
-
             spinner.start("Deleting project")
             await removeDir(appCwd)
             spinner.stop("Directory deleted.")
