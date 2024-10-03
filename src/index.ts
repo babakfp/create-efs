@@ -21,8 +21,8 @@ import {
     type ExecException,
 } from "./helpers/node/index.js"
 import { appendLines } from "./utilities/appendLines.js"
-import { getPbReleaseAssets } from "./utilities/getPbReleaseAssets.js"
-import { createPrompter, type RadioPromptOptions } from "./utilities/prompts.js"
+import { getPbReleaseInfo } from "./utilities/getPbReleaseInfo.js"
+import { createPrompter } from "./utilities/prompts.js"
 import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
 
@@ -91,7 +91,7 @@ if (exists(appCwd)) {
         } else if (dirNotEmpty === "delete") {
             spinner.start("Deleting")
             await removeDir(appCwd)
-            spinner.stop("Directory deleted.")
+            spinner.stop("Deleted.")
         }
     }
 }
@@ -147,7 +147,6 @@ const ig = ignore.default().add(
         .map((line) => (line.endsWith("/") ? line.slice(0, -1) : line)),
 )
 
-spinner.start("Doing IO operations")
 await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd, {
     filter: (from) => {
         const path = toPosix(join(relative(toPosix(cmd), toPosix(from)), "/"))
@@ -160,7 +159,6 @@ await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd, {
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
 await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
-spinner.stop("IO operations done.")
 
 if (prompts.db || (!prompts.db && prompts.env)) {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
@@ -206,9 +204,9 @@ if (prompts.db) {
 
     // --- Download PocketBase Executable
 
-    spinner.start("Fetching PocketBase latest release assets")
-    const pbReleases = await getPbReleaseAssets()
-    spinner.stop("PocketBase downloaded.")
+    spinner.start("Fetching PocketBase release info")
+    const pbReleases = await getPbReleaseInfo()
+    spinner.stop("Fetched PocketBase release info.")
 
     if (pbReleases.length) {
         let selectedPbReleaseName: string
@@ -248,11 +246,12 @@ if (prompts.db) {
         try {
             spinner.start("Downloading PocketBase")
             await downloader.download()
-            spinner.stop("PocketBase downloaded.")
+            spinner.stop("Downloaded PocketBase.")
 
             isDownloadSeccessful = true
         } catch {
-            spinner.stop("PocketBase download failed.", 1)
+            spinner.stop("Couldn't download PocketBase.", 1)
+            prompter.exit("Exited.")
         }
 
         if (isDownloadSeccessful) {
@@ -377,12 +376,12 @@ try {
 
     await exec(commands.join(" && "))
 
-    spinner.stop("Dependencies installed.")
+    spinner.stop("Installed dependencies.")
 } catch (e) {
     await removeDir(appCwd)
 
-    spinner.stop("Dependency installation failed.", (e as ExecException).code)
-    prompter.exit("Please try again.")
+    spinner.stop("Couldn't install dependencies.", (e as ExecException).code)
+    prompter.exit("Exited.")
 }
 
 prompts.git = await prompter.addConfirmPrompt({
@@ -403,9 +402,10 @@ if (prompts.git) {
             ].join(" && "),
         )
 
-        spinner.stop("Git initialized.")
+        spinner.stop("Initialized Git.")
     } catch (e) {
-        spinner.stop("Git initialization failed.", (e as ExecException).code)
+        spinner.stop("Couldn't initialize Git.", (e as ExecException).code)
+        prompter.exit("Exited.")
     }
 }
 
