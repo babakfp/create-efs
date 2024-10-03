@@ -35,18 +35,18 @@ const prompts: {
     namePath: string
     db: boolean
     realtimeDb: boolean
-    chooseSvelteKitAdapter: (typeof ADAPTERS)[keyof typeof ADAPTERS]
-    isSimpleScaffold: boolean
-    isGitInitAndCommit: boolean
-    isEnvNeeded: boolean
+    env: boolean
+    svelteAdapter: (typeof SVELTE_ADAPTERS)[keyof typeof SVELTE_ADAPTERS]
+    scaffold: boolean
+    git: boolean
 } = {
     namePath: "",
     db: false,
     realtimeDb: false,
-    chooseSvelteKitAdapter: "@sveltejs/adapter-auto",
-    isSimpleScaffold: false,
-    isGitInitAndCommit: true,
-    isEnvNeeded: false,
+    env: false,
+    svelteAdapter: "@sveltejs/adapter-auto",
+    scaffold: false,
+    git: true,
 }
 
 const { version }: { version: string } = await readJson(
@@ -103,21 +103,19 @@ prompts.db = await prompter.addConfirmPrompt({
 
 const clientCwd = !prompts.db ? appCwd : join(appCwd, "client")
 
-if (!prompts.db) {
-    prompts.isEnvNeeded = await prompter.addConfirmPrompt({
-        message: "Env",
-        initialValue: prompts.isEnvNeeded,
-    })
-}
-
 if (prompts.db) {
     prompts.realtimeDb = await prompter.addConfirmPrompt({
         message: "Realtime Database",
         initialValue: prompts.realtimeDb,
     })
+} else {
+    prompts.env = await prompter.addConfirmPrompt({
+        message: "Env",
+        initialValue: prompts.env,
+    })
 }
 
-const ADAPTERS = {
+const SVELTE_ADAPTERS = {
     Auto: "@sveltejs/adapter-auto",
     Netlify: "@sveltejs/adapter-netlify",
     Node: "@sveltejs/adapter-node",
@@ -125,18 +123,18 @@ const ADAPTERS = {
     Vercel: "@sveltejs/adapter-vercel",
 } as const
 
-const PROMPT_CHOOSE_SVELTE_KIT_ADAPTER_OPTIONS = Object.entries(ADAPTERS).map(
+const PROMPT_SVELTE_ADAPTER_OPTIONS = Object.entries(SVELTE_ADAPTERS).map(
     ([label, value]) => ({ label, value }),
 ) satisfies RadioPromptOptions
 
-prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
+prompts.svelteAdapter = await prompter.addRadioPrompt({
     message: "Adapter",
-    options: PROMPT_CHOOSE_SVELTE_KIT_ADAPTER_OPTIONS,
+    options: PROMPT_SVELTE_ADAPTER_OPTIONS,
 })
 
-prompts.isSimpleScaffold = await prompter.addConfirmPrompt({
+prompts.scaffold = await prompter.addConfirmPrompt({
     message: "Scaffold",
-    initialValue: prompts.isSimpleScaffold,
+    initialValue: prompts.scaffold,
 })
 
 if (prompts.namePath !== "" && !exists(appCwd)) {
@@ -165,7 +163,7 @@ await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
 await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
 spinner.stop("IO operations done.")
 
-if (prompts.db || (!prompts.db && prompts.isEnvNeeded)) {
+if (prompts.db || (!prompts.db && prompts.env)) {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
         appendLines(content, "/.svelte-kit/", [
             "/.env",
@@ -175,7 +173,7 @@ if (prompts.db || (!prompts.db && prompts.isEnvNeeded)) {
     )
 }
 
-if (!prompts.db && prompts.isEnvNeeded) {
+if (!prompts.db && prompts.env) {
     await writeFile(join(clientCwd, ".env"), "")
     await writeFile(join(clientCwd, ".env.example"), "")
 }
@@ -286,9 +284,9 @@ if (prompts.db) {
 
 // ---
 
-if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
+if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
     await editFile(join(clientCwd, "svelte.config.js"), (content) =>
-        content.replace(ADAPTERS.Auto, prompts.chooseSvelteKitAdapter),
+        content.replace(SVELTE_ADAPTERS.Auto, prompts.svelteAdapter),
     )
 
     // ---
@@ -297,17 +295,13 @@ if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
         const replaceWith: string[] = []
 
         if (
-            prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-node" ||
-            prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-static"
+            prompts.svelteAdapter === "@sveltejs/adapter-node" ||
+            prompts.svelteAdapter === "@sveltejs/adapter-static"
         ) {
             replaceWith.push("/build/")
-        } else if (
-            prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-vercel"
-        ) {
+        } else if (prompts.svelteAdapter === "@sveltejs/adapter-vercel") {
             replaceWith.push("/.vercel/")
-        } else if (
-            prompts.chooseSvelteKitAdapter === "@sveltejs/adapter-netlify"
-        ) {
+        } else if (prompts.svelteAdapter === "@sveltejs/adapter-netlify") {
             replaceWith.push("/.netlify/")
         }
 
@@ -315,7 +309,7 @@ if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
     })
 }
 
-if (prompts.isSimpleScaffold) {
+if (prompts.scaffold) {
     await copyFile(
         join(
             cmd,
@@ -365,20 +359,20 @@ try {
         commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
     }
 
-    if (prompts.chooseSvelteKitAdapter !== ADAPTERS.Auto) {
+    if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
         commands.push(
             ...[
-                `pnpm rm ${ADAPTERS.Auto}`,
-                `pnpm add -D ${prompts.chooseSvelteKitAdapter}`,
+                `pnpm rm ${SVELTE_ADAPTERS.Auto}`,
+                `pnpm add -D ${prompts.svelteAdapter}`,
             ],
         )
 
-        if (prompts.chooseSvelteKitAdapter === ADAPTERS.Node) {
+        if (prompts.svelteAdapter === SVELTE_ADAPTERS.Node) {
             commands.push("pnpm add -D @types/node")
         }
     }
 
-    if (prompts.isSimpleScaffold) {
+    if (prompts.scaffold) {
         commands.push("pnpm add -D remeda")
     }
 
@@ -394,12 +388,12 @@ try {
     )
 }
 
-prompts.isGitInitAndCommit = await prompter.addConfirmPrompt({
+prompts.git = await prompter.addConfirmPrompt({
     message: "Use Git?",
-    initialValue: prompts.isGitInitAndCommit,
+    initialValue: prompts.git,
 })
 
-if (prompts.isGitInitAndCommit) {
+if (prompts.git) {
     try {
         spinner.start("Initializing Git")
 
