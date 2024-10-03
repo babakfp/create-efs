@@ -32,19 +32,17 @@ const isPnpm = !!process.env.npm_config_user_agent?.includes("pnpm")
 const cmd = isNode ? process.cwd() : join(import.meta.dirname, "..")
 
 const prompts: {
-    enterNameOrPath: string
-    chooseWhatIfDirectoryNotEmpty: (typeof PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS)[number]["value"]
-    useDatabase: boolean
-    isRealTimePbNeeded: boolean
+    namePath: string
+    db: boolean
+    realtimeDb: boolean
     chooseSvelteKitAdapter: (typeof ADAPTERS)[keyof typeof ADAPTERS]
     isSimpleScaffold: boolean
     isGitInitAndCommit: boolean
     isEnvNeeded: boolean
 } = {
-    enterNameOrPath: "",
-    chooseWhatIfDirectoryNotEmpty: "exit",
-    useDatabase: false,
-    isRealTimePbNeeded: false,
+    namePath: "",
+    db: false,
+    realtimeDb: false,
     chooseSvelteKitAdapter: "@sveltejs/adapter-auto",
     isSimpleScaffold: false,
     isGitInitAndCommit: true,
@@ -67,32 +65,30 @@ if (!isNode && !isPnpm) {
     prompter.exit("Only PNPM is supported.")
 }
 
-prompts.enterNameOrPath = await prompter.addTextPrompt({
+prompts.namePath = await prompter.addTextPrompt({
     message: "Name / Path",
     placeholder: "Hit Enter to use the current directory.",
 })
 
-const appCwd = join(process.cwd(), prompts.enterNameOrPath)
-
-const PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS = [
-    { label: "Exit", value: "exit" },
-    {
-        label: "Delete and Continue!",
-        value: "delete",
-        hint: "This will delete the directory and all its contents.",
-    },
-] as const satisfies RadioPromptOptions
+const appCwd = join(process.cwd(), prompts.namePath)
 
 if (exists(appCwd)) {
     if ((await readDir(appCwd)).length) {
-        prompts.chooseWhatIfDirectoryNotEmpty = await prompter.addRadioPrompt({
+        const dirNotEmpty = await prompter.addRadioPrompt({
             message: "Directory Not Empty",
-            options: PROMPT_DIRECTORY_NOT_EMPTY_OPTIONS,
+            options: [
+                { label: "Exit", value: "exit" },
+                {
+                    label: "Delete and Continue!",
+                    value: "delete",
+                    hint: "This will delete the directory and all its contents.",
+                },
+            ],
         })
 
-        if (prompts.chooseWhatIfDirectoryNotEmpty === "exit") {
+        if (dirNotEmpty === "exit") {
             prompter.exit("Exited.")
-        } else if (prompts.chooseWhatIfDirectoryNotEmpty === "delete") {
+        } else if (dirNotEmpty === "delete") {
             const areYouSure = await prompter.addConfirmPrompt({
                 message: `Delete ${toPosix(appCwd)}`,
                 initialValue: false,
@@ -109,24 +105,24 @@ if (exists(appCwd)) {
     }
 }
 
-prompts.useDatabase = await prompter.addConfirmPrompt({
-    message: "Use Database?",
-    initialValue: prompts.useDatabase,
+prompts.db = await prompter.addConfirmPrompt({
+    message: "Database?",
+    initialValue: prompts.db,
 })
 
-const clientCwd = !prompts.useDatabase ? appCwd : join(appCwd, "client")
+const clientCwd = !prompts.db ? appCwd : join(appCwd, "client")
 
-if (!prompts.useDatabase) {
+if (!prompts.db) {
     prompts.isEnvNeeded = await prompter.addConfirmPrompt({
-        message: "Environment Variables?",
+        message: "Env?",
         initialValue: prompts.isEnvNeeded,
     })
 }
 
-if (prompts.useDatabase) {
-    prompts.isRealTimePbNeeded = await prompter.addConfirmPrompt({
+if (prompts.db) {
+    prompts.realtimeDb = await prompter.addConfirmPrompt({
         message: "Setup PocketBase for real-time features?",
-        initialValue: prompts.isRealTimePbNeeded,
+        initialValue: prompts.realtimeDb,
     })
 }
 
@@ -152,7 +148,7 @@ prompts.isSimpleScaffold = await prompter.addConfirmPrompt({
     initialValue: prompts.isSimpleScaffold,
 })
 
-if (prompts.enterNameOrPath !== "" && !exists(appCwd)) {
+if (prompts.namePath !== "" && !exists(appCwd)) {
     await makeDir(appCwd)
 }
 
@@ -178,7 +174,7 @@ await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
 await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
 spinner.stop("IO operations done.")
 
-if (prompts.useDatabase || (!prompts.useDatabase && prompts.isEnvNeeded)) {
+if (prompts.db || (!prompts.db && prompts.isEnvNeeded)) {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
         appendLines(content, "/.svelte-kit/", [
             "/.env",
@@ -188,17 +184,17 @@ if (prompts.useDatabase || (!prompts.useDatabase && prompts.isEnvNeeded)) {
     )
 }
 
-if (!prompts.useDatabase && prompts.isEnvNeeded) {
+if (!prompts.db && prompts.isEnvNeeded) {
     await writeFile(join(clientCwd, ".env"), "")
     await writeFile(join(clientCwd, ".env.example"), "")
 }
 
-if (prompts.useDatabase) {
+if (prompts.db) {
     await copyDir(join(cmd, "templates", "PocketBase Client"), clientCwd)
 
     // ---
 
-    const envPublicPrefix = prompts.isRealTimePbNeeded ? "PUBLIC_" : ""
+    const envPublicPrefix = prompts.realtimeDb ? "PUBLIC_" : ""
 
     const getEnvFileContent = () => {
         const defaultUrl = "http://127.0.0.1:8090"
@@ -281,7 +277,7 @@ if (prompts.useDatabase) {
     const typeGenOutputPath = join(
         "src",
         "lib",
-        prompts.isRealTimePbNeeded ? "" : "server",
+        prompts.realtimeDb ? "" : "server",
         "pb",
         "types.ts",
     )
@@ -374,7 +370,7 @@ try {
 
     const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
 
-    if (prompts.useDatabase) {
+    if (prompts.db) {
         commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
     }
 

@@ -29,7 +29,7 @@ export const createPrompter = async () => {
         if (clear) {
             console.clear()
         } else {
-            console.log() // Intentionally left blank line.
+            console.log()
         }
 
         intro(message)

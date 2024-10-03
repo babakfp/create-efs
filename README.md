@@ -37,13 +37,13 @@ pnpm create efs@latest
 │                   │  Project deleted.
 ├───────────────────┘
 │
-◆  Use Database?
+◆  Database?
 │  ○ Yes / ● No
 │
 ├────┬────┐
 │    │    ◇  No
 │    │    │
-│    │    ◆  Environment Variables?
+│    │    ◆  Env?
 │    │    │  ○ Yes / ● No
 │    │    │
 │    │    └──────────────────────────────────────────────────┐
