@@ -381,10 +381,8 @@ try {
 } catch (e) {
     await removeDir(appCwd)
 
-    spinner.stop(
-        "Dependency installation failed. Please try again.",
-        (e as ExecException).code,
-    )
+    spinner.stop("Dependency installation failed.", (e as ExecException).code)
+    prompter.exit("Please try again.")
 }
 
 prompts.git = await prompter.addConfirmPrompt({
