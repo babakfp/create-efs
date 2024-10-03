@@ -374,6 +374,9 @@ try {
         commands.push("pnpm add -D remeda")
     }
 
+    // Building the initial styles for the `src/error.html` file.
+    commands.push("pnpm error-build")
+
     await exec(commands.join(" && "))
 
     spinner.stop("Installed dependencies.")
