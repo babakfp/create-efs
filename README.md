@@ -11,50 +11,41 @@ pnpm create efs@latest
 ```
 ┌  Easy Full Stack
 │
-◆  Name / Path
+◆  Path
 │  Hit Enter to use the current directory.
 │
 ├────┐
 │    ◆  Directory Not Empty
 │    │  ● Exit
-│    │  ○ Delete and Continue! (This will delete the directory and all its contents.)
+│    │  ○ Delete! ( <DIRECTORY> )
 │    │
 │    └────┬────┐
 │         │    ◇  Exit
 │         │    └  Exited.
 │         │
 │         └────┐
-│              ◇  Delete and Continue!
-│              │
-│              ◆  Delete <DIRECTORY>
-│              │  ○ Yes / ● No
-│              │
-│              └────┬────┐
-│                   │    ◇  No
-│                   │    └  Exited.
-│                   │
-│                   ◇  Yes
-│                   │  Project deleted.
-├───────────────────┘
+│              ◇  Delete!
+│              │  Directory deleted.
+├──────────────┘
 │
-◆  Database?
+◆  Database
 │  ○ Yes / ● No
 │
 ├────┬────┐
 │    │    ◇  No
 │    │    │
-│    │    ◆  Env?
+│    │    ◆  Env
 │    │    │  ○ Yes / ● No
 │    │    │
-│    │    └──────────────────────────────────────────────────┐
-│    │                                                       │
-│    └────┐                                                  │
-│         ◇  Yes                                             │
-│         │                                                  │
-│         ◆  Setup PocketBase for real-time features?        │
-│         │  ○ Yes / ● No                                    │
-│         │                                                  │
-│         ├──────────────────────────────────────────────────┘
+│    │    └───────────────────────────┐
+│    │                                │
+│    └────┐                           │
+│         ◇  Yes                      │
+│         │                           │
+│         ◆  Realtime Database        │
+│         │  ○ Yes / ● No             │
+│         │                           │
+│         ├───────────────────────────┘
 ├─────────┘
 │
 ◆  Adapter
@@ -64,7 +55,7 @@ pnpm create efs@latest
 │  ○ Vercel
 │  ○ Netlify
 │
-◆  Simple scaffold?
+◆  Scaffold
 │  ○ Yes / ● No
 │
 ◇  Dependencies installed.

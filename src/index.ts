@@ -66,7 +66,7 @@ if (!isNode && !isPnpm) {
 }
 
 prompts.namePath = await prompter.addTextPrompt({
-    message: "Name / Path",
+    message: "Path",
     placeholder: "Hit Enter to use the current directory.",
 })
 
@@ -79,7 +79,7 @@ if (exists(appCwd)) {
             options: [
                 { label: "Exit", value: "exit" },
                 {
-                    label: "Delete and Continue!",
+                    label: "Delete!",
                     value: "delete",
                     hint: ` ${toPosix(appCwd)} `,
                 },
@@ -89,7 +89,7 @@ if (exists(appCwd)) {
         if (dirNotEmpty === "exit") {
             prompter.exit("Exited.")
         } else if (dirNotEmpty === "delete") {
-            spinner.start("Deleting project")
+            spinner.start("Deleting")
             await removeDir(appCwd)
             spinner.stop("Directory deleted.")
         }
@@ -97,7 +97,7 @@ if (exists(appCwd)) {
 }
 
 prompts.db = await prompter.addConfirmPrompt({
-    message: "Database?",
+    message: "Database",
     initialValue: prompts.db,
 })
 
@@ -105,14 +105,14 @@ const clientCwd = !prompts.db ? appCwd : join(appCwd, "client")
 
 if (!prompts.db) {
     prompts.isEnvNeeded = await prompter.addConfirmPrompt({
-        message: "Env?",
+        message: "Env",
         initialValue: prompts.isEnvNeeded,
     })
 }
 
 if (prompts.db) {
     prompts.realtimeDb = await prompter.addConfirmPrompt({
-        message: "Setup PocketBase for real-time features?",
+        message: "Realtime Database",
         initialValue: prompts.realtimeDb,
     })
 }
@@ -135,7 +135,7 @@ prompts.chooseSvelteKitAdapter = await prompter.addRadioPrompt({
 })
 
 prompts.isSimpleScaffold = await prompter.addConfirmPrompt({
-    message: "Simple scaffold?",
+    message: "Scaffold",
     initialValue: prompts.isSimpleScaffold,
 })
 
