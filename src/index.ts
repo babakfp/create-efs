@@ -141,7 +141,7 @@ if (prompts.namePath !== "" && !exists(appCwd)) {
 }
 
 const ig = ignore.default().add(
-    (await readFile(join(cmd, ".gitignore")))
+    (await readFile(join(cmd, "..", ".gitignore")))
         .split("\n")
         .map((line) => line.trim())
         .map((line) => (line.endsWith("/") ? line.slice(0, -1) : line)),
