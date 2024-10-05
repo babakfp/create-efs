@@ -1,13 +1,2 @@
-.DS_Store
 /node_modules/
 /dist/
-
-/templates/**/node_modules/
-/templates/**/.svelte-kit/
-/templates/**/build/
-/templates/**/.vercel/
-/templates/**/.netlify/
-/templates/**/vite.config.ts.timestamp-*
-/templates/.env
-/templates/.env.*
-!/templates/.env.example

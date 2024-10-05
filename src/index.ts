@@ -1,4 +1,3 @@
-import ignore from "ignore"
 import { Downloader } from "nodejs-file-downloader"
 import color from "picocolors"
 import {
@@ -140,21 +139,7 @@ if (prompts.namePath !== "" && !exists(appCwd)) {
     await makeDir(appCwd)
 }
 
-const ig = ignore.default().add(
-    (await readFile(join(cmd, "..", ".gitignore")))
-        .split("\n")
-        .map((line) => line.trim())
-        .map((line) => (line.endsWith("/") ? line.slice(0, -1) : line)),
-)
-
-await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd, {
-    filter: (from) => {
-        const path = toPosix(join(relative(toPosix(cmd), toPosix(from)), "/"))
-        const isIgnored = ig.ignores(path)
-        const isCopy = !isIgnored
-        return isCopy
-    },
-})
+await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd)
 
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
