@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "dev": "svelte-kit sync && vite dev",
+        "dev": "svelte-kit sync && pnpm error-build && vite dev",
         "build": "svelte-kit sync && pnpm error-build && vite build",
         "preview": "svelte-kit sync && vite preview",
         "format": "prettier -w .",
