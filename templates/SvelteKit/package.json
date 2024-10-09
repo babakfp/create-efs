@@ -1,7 +1,7 @@
 {
     "scripts": {
         "dev": "svelte-kit sync && vite dev",
-        "build": "svelte-kit sync && vite build",
+        "build": "svelte-kit sync && pnpm error-build && vite build",
         "preview": "svelte-kit sync && vite preview",
         "format": "prettier -w .",
         "error-watch": "tailwindcss -i src/lib/app.css -o static/error.css --content src/error.html -m -w",
