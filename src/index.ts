@@ -372,32 +372,32 @@ if (prompts.scaffold) {
 try {
     spinner.start("Installing dependencies")
 
+    const pnpmDevDeps = []
+
     const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
 
     if (prompts.db) {
-        commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
+        pnpmDevDeps.push("pocketbase", "pocketbase-auto-generate-types")
     }
 
     if (prompts.markdown) {
-        commands.push("pnpm add -D mdx-svelte")
+        pnpmDevDeps.push("mdx-svelte")
     }
 
     if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
-        commands.push(
-            ...[
-                `pnpm rm ${SVELTE_ADAPTERS.Auto}`,
-                `pnpm add -D ${prompts.svelteAdapter}`,
-            ],
-        )
+        commands.push(`pnpm rm ${SVELTE_ADAPTERS.Auto}`)
+        pnpmDevDeps.push(prompts.svelteAdapter)
 
         if (prompts.svelteAdapter === SVELTE_ADAPTERS.Node) {
-            commands.push("pnpm add -D @types/node")
+            pnpmDevDeps.push("@types/node")
         }
     }
 
     if (prompts.scaffold) {
-        commands.push("pnpm add -D remeda")
+        pnpmDevDeps.push("remeda")
     }
+
+    commands.push(`pnpm add -D ${pnpmDevDeps.join(" ")}`)
 
     // Building the initial styles for the `src/error.html` file.
     commands.push("pnpm error-build")
