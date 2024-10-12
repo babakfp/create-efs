@@ -1,9 +1,18 @@
 import { arch } from "node:os"
-import { fetchPbLatestRelease } from "./fetchPbLatestRelease.js"
 
-export const getPbReleaseInfo = (
-    data: Awaited<ReturnType<typeof fetchPbLatestRelease>>,
-) => {
+type GitHubPocketBaseRelease = {
+    assets: {
+        name: string
+        browser_download_url: string
+    }[]
+}
+
+export const fetchPbLatestReleaseAssets = async () => {
+    const res = await fetch(
+        "https://api.github.com/repos/pocketbase/pocketbase/releases/latest",
+    )
+    const data: GitHubPocketBaseRelease = await res.json()
+
     const assets = data.assets
         .filter((asset) => asset.name.endsWith(".zip"))
         .filter((asset) => {

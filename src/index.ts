@@ -18,8 +18,7 @@ import {
     type ExecException,
 } from "./helpers/node/index.js"
 import { appendLines } from "./utilities/appendLines.js"
-import { fetchPbLatestRelease } from "./utilities/fetchPbLatestRelease.js"
-import { getPbReleaseInfo } from "./utilities/getPbReleaseInfo.js"
+import { fetchPbLatestReleaseAssets } from "./utilities/fetchPbLatestReleaseAssets.js"
 import { createPrompter } from "./utilities/prompts.js"
 import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
@@ -139,24 +138,25 @@ prompts.git = await prompter.addConfirmPrompt({
     initialValue: prompts.git,
 })
 
-// ------------------------------
+// Fetch PocketBase releases
 
-const pbReleases: ReturnType<typeof getPbReleaseInfo> = []
+const pbLatestReleaseAssets: Awaited<
+    ReturnType<typeof fetchPbLatestReleaseAssets>
+> = []
 let selectedPbReleaseName = ""
 
 if (prompts.db) {
     try {
         spinner.start("Fetching latest PocketBase release")
-        const pbLatestReleaseAssets = await fetchPbLatestRelease()
+        pbLatestReleaseAssets.push(...(await fetchPbLatestReleaseAssets()))
         spinner.stop("Fetched latest PocketBase release.")
 
-        pbReleases.push(...getPbReleaseInfo(pbLatestReleaseAssets))
-        selectedPbReleaseName = pbReleases[0].name
+        selectedPbReleaseName = pbLatestReleaseAssets[0].name
 
-        if (pbReleases.length > 1) {
+        if (pbLatestReleaseAssets.length > 1) {
             selectedPbReleaseName = await prompter.addRadioPrompt({
                 message: "Choose an Asset",
-                options: pbReleases.map((asset) => ({
+                options: pbLatestReleaseAssets.map((asset) => ({
                     label: asset.name,
                     value: asset.name,
                 })),
@@ -170,8 +170,6 @@ if (prompts.db) {
         prompter.exit("Exited.")
     }
 }
-
-// -------------------------------
 
 if (prompts.namePath !== "" && !exists(appCwd)) {
     await makeDir(appCwd)
@@ -236,7 +234,7 @@ if (prompts.db) {
         ),
     )
 
-    const downloadUrl = pbReleases.filter(
+    const downloadUrl = pbLatestReleaseAssets.filter(
         (asset) => asset.name === selectedPbReleaseName,
     )[0].downloadUrl
 
