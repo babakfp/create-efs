@@ -444,7 +444,7 @@ if (prompts.markdown) {
 if (learnItems.length) {
     prompter.insertMessage(
         [
-            color.green("Learn:"),
+            color.green("LEARN"),
             `${learnItems.map((item) => `${color.gray("│")}  https://babakfp.ir/docs/mdx-svelte`)}`,
         ].join("\n"),
     )
@@ -452,7 +452,7 @@ if (learnItems.length) {
 
 prompter.insertMessage(
     [
-        color.green("Next Steps:"),
+        color.green("NEXT STEPS"),
         `${color.gray("│")}  ${color.gray("1.")} ${isVsCodeTerminal() ? `${color.yellow("code")} ${prompts.namePath} ${color.gray("-r")}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
         `${color.gray("│")}  ${color.gray("2.")} ${color.yellow("pnpm")} dev`,
     ].join("\n"),
