@@ -1,18 +1,11 @@
 import { arch } from "node:os"
-import { dummyLatestReleaseData } from "./dummyLatestReleaseData.js"
+import { fetchPbLatestRelease } from "./fetchPbLatestRelease.js"
 
-export const getPbReleaseInfo = async (useDummyData = false) => {
-    let data = dummyLatestReleaseData
-
-    if (!useDummyData) {
-        const res = await fetch(
-            "https://api.github.com/repos/pocketbase/pocketbase/releases/latest",
-        )
-        data = await res.json()
-    }
-
+export const getPbReleaseInfo = (
+    data: Awaited<ReturnType<typeof fetchPbLatestRelease>>,
+) => {
     const assets = data.assets
-        .slice(1)
+        .filter((asset) => asset.name.endsWith(".zip"))
         .filter((asset) => {
             if (process.platform === "win32") {
                 return asset.name.includes("windows")

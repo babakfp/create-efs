@@ -1,4 +1,4 @@
-export const dummyLatestReleaseData = {
+export const pbDummyLatestRelease = {
     url: "https://api.github.com/repos/pocketbase/pocketbase/releases/161117281",
     assets_url:
         "https://api.github.com/repos/pocketbase/pocketbase/releases/161117281/assets",

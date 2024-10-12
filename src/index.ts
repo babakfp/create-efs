@@ -18,6 +18,7 @@ import {
     type ExecException,
 } from "./helpers/node/index.js"
 import { appendLines } from "./utilities/appendLines.js"
+import { fetchPbLatestRelease } from "./utilities/fetchPbLatestRelease.js"
 import { getPbReleaseInfo } from "./utilities/getPbReleaseInfo.js"
 import { createPrompter } from "./utilities/prompts.js"
 import { createSpinner } from "./utilities/spinner.js"
@@ -133,6 +134,36 @@ prompts.scaffold = await prompter.addConfirmPrompt({
     initialValue: prompts.scaffold,
 })
 
+prompts.git = await prompter.addConfirmPrompt({
+    message: "Git",
+    initialValue: prompts.git,
+})
+
+// ------------------------------
+
+const pbReleases: ReturnType<typeof getPbReleaseInfo> = []
+let selectedPbReleaseName = ""
+
+if (prompts.db) {
+    spinner.start("Fetching PocketBase release info")
+    const pbLatestReleaseAssets = await fetchPbLatestRelease()
+    spinner.stop("Fetched PocketBase release info.")
+    pbReleases.push(...getPbReleaseInfo(pbLatestReleaseAssets))
+    selectedPbReleaseName = pbReleases[0].name
+
+    if (pbReleases.length > 1) {
+        selectedPbReleaseName = await prompter.addRadioPrompt({
+            message: "Choose an Asset",
+            options: pbReleases.map((asset) => ({
+                label: asset.name,
+                value: asset.name,
+            })),
+        })
+    }
+}
+
+// -------------------------------
+
 if (prompts.namePath !== "" && !exists(appCwd)) {
     await makeDir(appCwd)
 }
@@ -187,59 +218,39 @@ if (prompts.db) {
 
     // --- Download PocketBase Executable
 
-    spinner.start("Fetching PocketBase release info")
-    const pbReleases = await getPbReleaseInfo()
-    spinner.stop("Fetched PocketBase release info.")
+    const pbVersion = selectedPbReleaseName.split("_")[1]
 
-    if (pbReleases.length) {
-        let selectedPbReleaseName: string
+    await editFile(join(appCwd, "storage", "Dockerfile"), (content) =>
+        content.replace(
+            "ARG PB_VERSION=0.22.12",
+            `ARG PB_VERSION=${pbVersion}`,
+        ),
+    )
 
-        if (pbReleases.length > 1) {
-            selectedPbReleaseName = await prompter.addRadioPrompt({
-                message: "Choose an Asset",
-                options: pbReleases.map((asset) => ({
-                    label: asset.name,
-                    value: asset.name,
-                })),
-            })
-        } else {
-            selectedPbReleaseName = pbReleases[0].name
-        }
+    const downloadUrl = pbReleases.filter(
+        (asset) => asset.name === selectedPbReleaseName,
+    )[0].downloadUrl
 
-        const pbVersion = selectedPbReleaseName.split("_")[1]
+    const downloader = new Downloader({
+        url: downloadUrl,
+        directory: join(appCwd, "storage"),
+    })
 
-        await editFile(join(appCwd, "storage", "Dockerfile"), (content) =>
-            content.replace(
-                "ARG PB_VERSION=0.22.12",
-                `ARG PB_VERSION=${pbVersion}`,
-            ),
-        )
+    let isDownloadSeccessful = false
 
-        const downloadUrl = pbReleases.filter(
-            (asset) => asset.name === selectedPbReleaseName,
-        )[0].downloadUrl
+    try {
+        spinner.start("Downloading PocketBase")
+        await downloader.download()
+        spinner.stop("Downloaded PocketBase.")
 
-        const downloader = new Downloader({
-            url: downloadUrl,
-            directory: join(appCwd, "storage"),
-        })
+        isDownloadSeccessful = true
+    } catch {
+        spinner.stop("Couldn't download PocketBase.", 1)
+        prompter.exit("Exited.")
+    }
 
-        let isDownloadSeccessful = false
-
-        try {
-            spinner.start("Downloading PocketBase")
-            await downloader.download()
-            spinner.stop("Downloaded PocketBase.")
-
-            isDownloadSeccessful = true
-        } catch {
-            spinner.stop("Couldn't download PocketBase.", 1)
-            prompter.exit("Exited.")
-        }
-
-        if (isDownloadSeccessful) {
-            await unZip(join(appCwd, "storage", selectedPbReleaseName))
-        }
+    if (isDownloadSeccessful) {
+        await unZip(join(appCwd, "storage", selectedPbReleaseName))
     }
 
     // --- PocketBase Type Generation
@@ -369,11 +380,6 @@ try {
     spinner.stop("Couldn't install dependencies.", (e as ExecException).code)
     prompter.exit("Exited.")
 }
-
-prompts.git = await prompter.addConfirmPrompt({
-    message: "Git",
-    initialValue: prompts.git,
-})
 
 if (prompts.git) {
     try {
