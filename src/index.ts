@@ -147,9 +147,9 @@ let selectedPbReleaseName = ""
 
 if (prompts.db) {
     try {
-        spinner.start("Fetching latest PocketBase release")
+        spinner.start("Fetching latest PocketBase release assets")
         pbLatestReleaseAssets.push(...(await fetchPbLatestReleaseAssets()))
-        spinner.stop("Fetched latest PocketBase release.")
+        spinner.stop("Fetched PocketBase release assets.")
 
         selectedPbReleaseName = pbLatestReleaseAssets[0].name
 
