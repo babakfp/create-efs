@@ -397,7 +397,9 @@ try {
         pnpmDevDeps.push("remeda")
     }
 
-    commands.push(`pnpm add -D ${pnpmDevDeps.join(" ")}`)
+    if (pnpmDevDeps.length) {
+        commands.push(`pnpm add -D ${pnpmDevDeps.join(" ")}`)
+    }
 
     // Building the initial styles for the `src/error.html` file.
     commands.push("pnpm error-build")
