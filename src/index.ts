@@ -19,6 +19,7 @@ import {
 } from "./helpers/node/index.js"
 import { appendLines } from "./utilities/appendLines.js"
 import { fetchPbLatestReleaseAssets } from "./utilities/fetchPbLatestReleaseAssets.js"
+import { isVsCodeTerminal } from "./utilities/isVsCodeTerminal.js"
 import { createPrompter } from "./utilities/prompts.js"
 import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
@@ -441,8 +442,20 @@ if (prompts.markdown) {
 }
 
 if (learnItems.length) {
-    prompter.insertMessage(`LEARN:
-${learnItems.map((item) => `${color.gray("│")}  https://babakfp.ir/docs/mdx-svelte`)}`)
+    prompter.insertMessage(
+        [
+            color.green("Learn:"),
+            `${learnItems.map((item) => `${color.gray("│")}  https://babakfp.ir/docs/mdx-svelte`)}`,
+        ].join("\n"),
+    )
 }
+
+prompter.insertMessage(
+    [
+        color.green("Next Steps:"),
+        `${color.gray("│")}  ${color.gray("1.")} ${isVsCodeTerminal() ? `${color.yellow("code")} ${prompts.namePath} ${color.gray("-r")}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
+        `${color.gray("│")}  ${color.gray("2.")} ${color.yellow("pnpm")} dev`,
+    ].join("\n"),
+)
 
 prompter.insertOutro("Your app is ready.")
