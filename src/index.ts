@@ -145,20 +145,29 @@ const pbReleases: ReturnType<typeof getPbReleaseInfo> = []
 let selectedPbReleaseName = ""
 
 if (prompts.db) {
-    spinner.start("Fetching PocketBase release info")
-    const pbLatestReleaseAssets = await fetchPbLatestRelease()
-    spinner.stop("Fetched PocketBase release info.")
-    pbReleases.push(...getPbReleaseInfo(pbLatestReleaseAssets))
-    selectedPbReleaseName = pbReleases[0].name
+    try {
+        spinner.start("Fetching latest PocketBase release")
+        const pbLatestReleaseAssets = await fetchPbLatestRelease()
+        spinner.stop("Fetched latest PocketBase release.")
 
-    if (pbReleases.length > 1) {
-        selectedPbReleaseName = await prompter.addRadioPrompt({
-            message: "Choose an Asset",
-            options: pbReleases.map((asset) => ({
-                label: asset.name,
-                value: asset.name,
-            })),
-        })
+        pbReleases.push(...getPbReleaseInfo(pbLatestReleaseAssets))
+        selectedPbReleaseName = pbReleases[0].name
+
+        if (pbReleases.length > 1) {
+            selectedPbReleaseName = await prompter.addRadioPrompt({
+                message: "Choose an Asset",
+                options: pbReleases.map((asset) => ({
+                    label: asset.name,
+                    value: asset.name,
+                })),
+            })
+        }
+    } catch (e) {
+        spinner.stop(
+            "Couldn't fetch PocketBase release.",
+            (e as ExecException).code,
+        )
+        prompter.exit("Exited.")
     }
 }
 
