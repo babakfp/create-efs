@@ -434,4 +434,15 @@ if (prompts.git) {
     }
 }
 
+const learnItems = []
+
+if (prompts.markdown) {
+    learnItems.push("https://babakfp.ir/docs/mdx-svelte")
+}
+
+if (learnItems.length) {
+    prompter.insertMessage(`LEARN:
+${learnItems.map((item) => `${color.gray("│")}  https://babakfp.ir/docs/mdx-svelte`)}`)
+}
+
 prompter.insertOutro("Your app is ready.")
