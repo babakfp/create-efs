@@ -45,6 +45,9 @@ pnpm create efs@latest
 │    │                           │
 ├────┴───────────────────────────┘
 │
+◆  Markdown
+│  ○ Yes / ● No
+│
 ◆  Adapter
 │  ● Auto
 │  ○ Node

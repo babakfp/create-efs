@@ -32,6 +32,7 @@ const prompts: {
     namePath: string
     db: boolean
     realtimeDb: boolean
+    markdown: boolean
     env: boolean
     svelteAdapter: (typeof SVELTE_ADAPTERS)[keyof typeof SVELTE_ADAPTERS]
     scaffold: boolean
@@ -40,6 +41,7 @@ const prompts: {
     namePath: "",
     db: false,
     realtimeDb: false,
+    markdown: false,
     env: false,
     svelteAdapter: "@sveltejs/adapter-auto",
     scaffold: false,
@@ -111,6 +113,11 @@ if (prompts.db) {
         initialValue: prompts.env,
     })
 }
+
+prompts.markdown = await prompter.addConfirmPrompt({
+    message: "Markdown",
+    initialValue: prompts.markdown,
+})
 
 const SVELTE_ADAPTERS = {
     Auto: "@sveltejs/adapter-auto",
@@ -281,6 +288,19 @@ if (prompts.db) {
     })
 }
 
+// Markdown
+if (prompts.markdown) {
+    await editFile(join(clientCwd, "svelte.config.js"), (content) => {
+        content =
+            `import { EXTENSIONS, mdxPreprocess } from "mdx-svelte"\n` + content
+        content = content.replace(
+            `vitePreprocess()`,
+            `[mdxPreprocess(), vitePreprocess()],`,
+        )
+        return content
+    })
+}
+
 // ---
 
 if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
@@ -356,6 +376,10 @@ try {
 
     if (prompts.db) {
         commands.push("pnpm add -D pocketbase pocketbase-auto-generate-types")
+    }
+
+    if (prompts.markdown) {
+        commands.push("pnpm add -D mdx-svelte")
     }
 
     if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
