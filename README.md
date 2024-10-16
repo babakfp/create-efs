@@ -63,7 +63,7 @@ pnpm create efs@latest
 ◆  Git
 │  ● Yes / ○ No
 │
-└  Your app is ready.
+└  All done.
 ```
 
 ## FrontEnd & BackEnd

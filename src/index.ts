@@ -75,7 +75,7 @@ const appCwd = join(process.cwd(), prompts.namePath)
 if (exists(appCwd)) {
     if ((await readDir(appCwd)).length) {
         const dirNotEmpty = await prompter.radio({
-            message: "Directory Not Empty",
+            message: "Directory is not empty",
             options: [
                 { label: "Exit", value: "exit" },
                 {
@@ -163,7 +163,7 @@ if (prompts.db) {
 
         if (pbLatestReleaseAssets.length > 1) {
             selectedPbReleaseName = await prompter.radio({
-                message: "Choose an Asset",
+                message: "Choose based on your OS",
                 options: pbLatestReleaseAssets.map((asset) => ({
                     label: asset.name,
                     value: asset.name,
@@ -459,7 +459,7 @@ prompter.note(
         .map((note, i) => `${color.gray(`${i + 1}.`)} ${note}`)
         .map((note) => (note += "  "))
         .join("\n"),
-    "Next Steps",
+    "Next steps",
 )
 
-prompter.outro("Your app is ready.")
+prompter.outro("All done.")
