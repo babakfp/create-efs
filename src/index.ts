@@ -435,27 +435,31 @@ if (prompts.git) {
     }
 }
 
-const learnItems = []
+const learnNotes = []
 
 if (prompts.markdown) {
-    learnItems.push("https://babakfp.ir/docs/mdx-svelte")
+    learnNotes.push("https://babakfp.ir/docs/mdx-svelte")
 }
 
-if (learnItems.length) {
-    prompter.insertMessage(
-        [
-            color.green("LEARN"),
-            `${learnItems.map((item) => `${color.gray("│")}  https://babakfp.ir/docs/mdx-svelte`)}`,
-        ].join("\n"),
+if (learnNotes.length) {
+    prompter.insertNote(
+        learnNotes
+            .map((note) => `${color.gray("-")} ${note}`)
+            .map((note) => (note += "  "))
+            .join("\n"),
+        "Learn",
     )
 }
 
-prompter.insertMessage(
+prompter.insertNote(
     [
-        color.green("NEXT STEPS"),
-        `${color.gray("│")}  ${color.gray("1.")} ${isVsCodeTerminal() ? `${color.yellow("code")} ${prompts.namePath} ${color.gray("-r")}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
-        `${color.gray("│")}  ${color.gray("2.")} ${color.yellow("pnpm")} dev`,
-    ].join("\n"),
+        `${isVsCodeTerminal() ? `${color.yellow("code")} ${prompts.namePath} ${color.gray("-r")}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
+        `${color.yellow("pnpm")} dev`,
+    ]
+        .map((note, i) => `${color.gray(`${i + 1}.`)} ${note}`)
+        .map((note) => (note += "  "))
+        .join("\n"),
+    "Next Steps",
 )
 
 prompter.insertOutro("Your app is ready.")

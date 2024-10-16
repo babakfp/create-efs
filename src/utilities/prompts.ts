@@ -3,6 +3,7 @@ import {
     confirm,
     intro,
     isCancel,
+    note,
     outro,
     select,
     text,
@@ -121,5 +122,6 @@ export const createPrompter = async () => {
         addConfirmPrompt,
         addRadioPrompt,
         exit,
+        insertNote: note,
     }
 }
