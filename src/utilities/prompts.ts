@@ -8,7 +8,6 @@ import {
     select,
     text,
 } from "@clack/prompts"
-import { createSpinner } from "./spinner.js"
 
 export type RadioPromptOptions = {
     label: string
@@ -42,15 +41,6 @@ export const createPrompter = async () => {
         }
 
         outro(message)
-    }
-
-    /**
-     * @param code - Use any number above `0` to show the message as an error.
-     */
-    const insertMessage = (message: string, code?: 0 | number) => {
-        const instance = createSpinner()
-        instance.start("")
-        instance.stop(message, code)
     }
 
     const addTextPrompt = async (options: {
@@ -117,7 +107,6 @@ export const createPrompter = async () => {
     return {
         insertIntro,
         insertOutro,
-        insertMessage,
         addTextPrompt,
         addConfirmPrompt,
         addRadioPrompt,
