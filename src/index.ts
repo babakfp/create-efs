@@ -56,7 +56,7 @@ const { version }: { version: string } = await readJson(
 const prompter = await createPrompter()
 const spinner = createSpinner()
 
-prompter.insertIntro(
+prompter.intro(
     `${color.bgCyan(color.black(` Easy Full Stack `))}  v${version}`,
     true,
 )
@@ -65,7 +65,7 @@ if (!isNode && !isPnpm) {
     prompter.exit("Only PNPM is supported.")
 }
 
-prompts.namePath = await prompter.addTextPrompt({
+prompts.namePath = await prompter.text({
     message: "Path",
     placeholder: "Hit Enter to use the current directory.",
 })
@@ -74,7 +74,7 @@ const appCwd = join(process.cwd(), prompts.namePath)
 
 if (exists(appCwd)) {
     if ((await readDir(appCwd)).length) {
-        const dirNotEmpty = await prompter.addRadioPrompt({
+        const dirNotEmpty = await prompter.radio({
             message: "Directory Not Empty",
             options: [
                 { label: "Exit", value: "exit" },
@@ -96,7 +96,7 @@ if (exists(appCwd)) {
     }
 }
 
-prompts.db = await prompter.addConfirmPrompt({
+prompts.db = await prompter.confirm({
     message: "Database",
     initialValue: prompts.db,
 })
@@ -104,18 +104,18 @@ prompts.db = await prompter.addConfirmPrompt({
 const clientCwd = !prompts.db ? appCwd : join(appCwd, "client")
 
 if (prompts.db) {
-    prompts.realtimeDb = await prompter.addConfirmPrompt({
+    prompts.realtimeDb = await prompter.confirm({
         message: "Realtime Database",
         initialValue: prompts.realtimeDb,
     })
 } else {
-    prompts.env = await prompter.addConfirmPrompt({
+    prompts.env = await prompter.confirm({
         message: "Env",
         initialValue: prompts.env,
     })
 }
 
-prompts.markdown = await prompter.addConfirmPrompt({
+prompts.markdown = await prompter.confirm({
     message: "Markdown",
     initialValue: prompts.markdown,
 })
@@ -128,7 +128,7 @@ const SVELTE_ADAPTERS = {
     Vercel: "@sveltejs/adapter-vercel",
 } as const
 
-prompts.svelteAdapter = await prompter.addRadioPrompt({
+prompts.svelteAdapter = await prompter.radio({
     message: "Adapter",
     options: Object.entries(SVELTE_ADAPTERS).map(([label, value]) => ({
         label,
@@ -136,12 +136,12 @@ prompts.svelteAdapter = await prompter.addRadioPrompt({
     })),
 })
 
-prompts.scaffold = await prompter.addConfirmPrompt({
+prompts.scaffold = await prompter.confirm({
     message: "Scaffold",
     initialValue: prompts.scaffold,
 })
 
-prompts.git = await prompter.addConfirmPrompt({
+prompts.git = await prompter.confirm({
     message: "Git",
     initialValue: prompts.git,
 })
@@ -162,7 +162,7 @@ if (prompts.db) {
         selectedPbReleaseName = pbLatestReleaseAssets[0].name
 
         if (pbLatestReleaseAssets.length > 1) {
-            selectedPbReleaseName = await prompter.addRadioPrompt({
+            selectedPbReleaseName = await prompter.radio({
                 message: "Choose an Asset",
                 options: pbLatestReleaseAssets.map((asset) => ({
                     label: asset.name,
@@ -442,7 +442,7 @@ if (prompts.markdown) {
 }
 
 if (learnNotes.length) {
-    prompter.insertNote(
+    prompter.note(
         learnNotes
             .map((note) => `${color.gray("-")} ${note}`)
             .map((note) => (note += "  "))
@@ -451,7 +451,7 @@ if (learnNotes.length) {
     )
 }
 
-prompter.insertNote(
+prompter.note(
     [
         `${isVsCodeTerminal() ? `${color.yellow("code")} ${prompts.namePath} ${color.gray("-r")}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
         `${color.yellow("pnpm")} dev`,
@@ -462,4 +462,4 @@ prompter.insertNote(
     "Next Steps",
 )
 
-prompter.insertOutro("Your app is ready.")
+prompter.outro("Your app is ready.")
