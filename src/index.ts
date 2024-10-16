@@ -20,7 +20,7 @@ import {
 import { appendLines } from "./utilities/appendLines.js"
 import { fetchPbLatestReleaseAssets } from "./utilities/fetchPbLatestReleaseAssets.js"
 import { isVsCodeTerminal } from "./utilities/isVsCodeTerminal.js"
-import { createPrompter } from "./utilities/prompts.js"
+import { createPrompter } from "./utilities/prompter.js"
 import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
 
