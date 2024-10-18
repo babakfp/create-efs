@@ -156,8 +156,5 @@ These extensions are useful.
     "path-intellisense.extensionOnImport": true,
     "path-intellisense.autoTriggerNextSuggestion": true,
     "path-intellisense.autoSlashAfterDirectory": true,
-    "path-intellisense.mappings": {
-        "%sveltekit.assets%": "${workspaceFolder}/static", // You will get intellisense for the static folder after typing `%sveltekit.assets%/`.
-    },
 }
 ```
