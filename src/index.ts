@@ -294,12 +294,19 @@ if (prompts.markdown) {
     await editFile(join(clientCwd, "svelte.config.js"), (content) => {
         content =
             `import { EXTENSIONS, mdxPreprocess } from "mdx-svelte"\n` + content
+        content = appendLines(content, `export default {`, [
+            `    extensions: EXTENSIONS,`,
+        ])
         content = content.replace(
             `vitePreprocess()`,
             `[mdxPreprocess(), vitePreprocess()]`,
         )
         return content
     })
+    await rename(
+        join(clientCwd, "src", "routes", "+page.svelte"),
+        join(clientCwd, "src", "routes", "+page.md"),
+    )
 }
 
 // ---
