@@ -296,7 +296,7 @@ if (prompts.markdown) {
             `import { EXTENSIONS, mdxPreprocess } from "mdx-svelte"\n` + content
         content = content.replace(
             `vitePreprocess()`,
-            `[mdxPreprocess(), vitePreprocess()],`,
+            `[mdxPreprocess(), vitePreprocess()]`,
         )
         return content
     })
