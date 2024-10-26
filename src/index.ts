@@ -280,7 +280,7 @@ if (prompts.db) {
 
     const pbTypeGenScript = {
         key: "pb-types",
-        value: `pocketbase-auto-generate-types -u ${envPublicPrefix}PB_URL -e PB_EMAIL -p PB_PASSWORD -o ${toPosix(typeGenOutputPath)}`,
+        value: `pocketbase-auto-generate-types -o ${toPosix(typeGenOutputPath)}`,
     }
 
     await editJson(join(clientCwd, "package.json"), (json) => {
