@@ -390,6 +390,7 @@ try {
 
     if (prompts.markdown) {
         pnpmDevDeps.push("mdx-svelte")
+        pnpmDevDeps.push("mdx-collections-svelte")
     }
 
     if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
@@ -445,7 +446,8 @@ if (prompts.git) {
 const learnNotes = []
 
 if (prompts.markdown) {
-    learnNotes.push("https://babakfp.ir/docs/mdx-svelte")
+    learnNotes.push("MDX Svelte: https://npmjs.com/package/mdx-svelte")
+    learnNotes.push("MDX Collections Svelte: https://npmjs.com/package/mdx-collections-svelte")
 }
 
 if (learnNotes.length) {
