@@ -396,10 +396,6 @@ try {
     if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
         commands.push(`pnpm rm ${SVELTE_ADAPTERS.Auto}`)
         pnpmDevDeps.push(prompts.svelteAdapter)
-
-        if (prompts.svelteAdapter === SVELTE_ADAPTERS.Node) {
-            pnpmDevDeps.push("@types/node")
-        }
     }
 
     if (prompts.scaffold) {
@@ -447,7 +443,9 @@ const learnNotes = []
 
 if (prompts.markdown) {
     learnNotes.push("MDX Svelte: https://npmjs.com/package/mdx-svelte")
-    learnNotes.push("MDX Collections Svelte: https://npmjs.com/package/mdx-collections-svelte")
+    learnNotes.push(
+        "MDX Collections Svelte: https://npmjs.com/package/mdx-collections-svelte",
+    )
 }
 
 if (learnNotes.length) {
