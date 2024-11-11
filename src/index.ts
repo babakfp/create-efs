@@ -407,7 +407,7 @@ try {
     }
 
     // Building the initial styles for the `src/error.html` file.
-    commands.push("pnpm error-build")
+    commands.push("pnpm error.html.css")
 
     await exec(commands.join(" && "))
 

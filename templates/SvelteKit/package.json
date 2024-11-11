@@ -1,11 +1,11 @@
 {
     "scripts": {
-        "dev": "svelte-kit sync && pnpm error-build && vite dev",
-        "build": "svelte-kit sync && pnpm error-build && vite build",
+        "dev": "svelte-kit sync && pnpm error.html.css && vite dev",
+        "build": "svelte-kit sync && pnpm error.html.css && vite build",
         "preview": "svelte-kit sync && vite preview",
         "format": "prettier -w .",
-        "error-watch": "tailwindcss -i src/lib/app.css -o static/error.css --content src/error.html -m -w",
-        "error-build": "tailwindcss -i src/lib/app.css -o static/error.css --content src/error.html -m"
+        "error.html.css": "tailwindcss -i src/lib/app.css -o static/error.html.css --content src/error.html -m",
+        "error.html.css:watch": "tailwindcss -i src/lib/app.css -o static/error.html.css --content src/error.html -m -w"
     },
     "devDependencies": {
         "@ianvs/prettier-plugin-sort-imports": "4.3.1",
