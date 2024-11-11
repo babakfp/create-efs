@@ -280,7 +280,7 @@ if (prompts.db) {
 
     const pbTypeGenScript = {
         key: "pb-types",
-        value: `pocketbase-auto-generate-types -o ${toPosix(typeGenOutputPath)}`,
+        value: `pocketbase-types -o ${toPosix(typeGenOutputPath)}`,
     }
 
     await editJson(join(clientCwd, "package.json"), (json) => {
@@ -385,7 +385,7 @@ try {
     const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
 
     if (prompts.db) {
-        pnpmDevDeps.push("pocketbase", "pocketbase-auto-generate-types")
+        pnpmDevDeps.push("pocketbase", "pocketbase-types")
     }
 
     if (prompts.markdown) {
