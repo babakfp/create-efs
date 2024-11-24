@@ -292,8 +292,12 @@ if (prompts.db) {
 // Markdown
 if (prompts.markdown) {
     await editFile(join(clientCwd, "svelte.config.js"), (content) => {
-        content =
-            `import { EXTENSIONS, mdxPreprocess } from "mdx-svelte"\n` + content
+        content = appendLines(
+            content,
+            `import { vitePreprocess } from "@sveltejs/vite-plugin-svelte"`,
+            [`import { EXTENSIONS, mdxPreprocess } from "mdx-svelte"`],
+        )
+
         content = appendLines(content, `export default {`, [
             `    extensions: EXTENSIONS,`,
         ])
