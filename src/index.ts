@@ -446,9 +446,11 @@ if (prompts.git) {
 const learnNotes = []
 
 if (prompts.markdown) {
-    learnNotes.push("MDX Svelte: https://npmjs.com/package/mdx-svelte")
     learnNotes.push(
-        "MDX Collections Svelte: https://npmjs.com/package/mdx-collections-svelte",
+        `MDX Svelte: ${color.blue("https://npmjs.com/package/mdx-svelte")}`,
+    )
+    learnNotes.push(
+        `MDX Collections Svelte: ${color.blue("https://npmjs.com/package/mdx-collections-svelte")}`,
     )
 }
 
