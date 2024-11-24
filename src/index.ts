@@ -460,7 +460,7 @@ if (learnNotes.length) {
 
 prompter.note(
     [
-        `${isVsCodeTerminal() ? `${color.yellow("code")} ${prompts.namePath} ${color.gray("-r")}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
+        `${isVsCodeTerminal() ? `${color.yellow("code")} ${color.gray("-r")} ${prompts.namePath}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
         `${color.yellow("pnpm")} dev`,
     ]
         .map((note, i) => `${color.gray(`${i + 1}.`)} ${note}`)
