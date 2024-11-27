@@ -307,10 +307,6 @@ if (prompts.markdown) {
         )
         return content
     })
-    await rename(
-        join(clientCwd, "src", "routes", "+page.svelte"),
-        join(clientCwd, "src", "routes", "+page.md"),
-    )
 }
 
 // ---
