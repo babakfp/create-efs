@@ -382,7 +382,7 @@ try {
 
     const pnpmDevDeps = []
 
-    const commands = [`cd ${clientCwd}`, "pnpm up --latest"]
+    const commands = [`cd ${clientCwd}`, "pnpm up"]
 
     if (prompts.db) {
         pnpmDevDeps.push("pocketbase", "pocketbase-types")
