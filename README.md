@@ -73,8 +73,8 @@ pnpm create efs@latest
 -   [Tailwind CSS](https://tailwindcss.com)
 -   [Prettier](https://prettier.io)
 -   [Prettier Plugin Svelte](https://github.com/sveltejs/prettier-plugin-svelte)
--   [Prettier Plugin Tailwind CSS](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
 -   [Prettier Plugin Sort Imports](https://github.com/IanVS/prettier-plugin-sort-imports)
+-   [Prettier Plugin Tailwind CSS](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
 
 ## Storage
 
