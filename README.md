@@ -68,18 +68,18 @@ pnpm create efs@latest
 
 ## FrontEnd & BackEnd
 
--   [Svelte](https://svelte.dev)
--   [SvelteKit](https://kit.svelte.dev)
--   [Tailwind CSS](https://tailwindcss.com)
--   [Prettier](https://prettier.io)
--   [Prettier Plugin Svelte](https://github.com/sveltejs/prettier-plugin-svelte)
--   [Prettier Plugin Sort Imports](https://github.com/IanVS/prettier-plugin-sort-imports)
--   [Prettier Plugin Tailwind CSS](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
+- [Svelte](https://svelte.dev)
+- [SvelteKit](https://kit.svelte.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Prettier](https://prettier.io)
+- [Prettier Plugin Svelte](https://github.com/sveltejs/prettier-plugin-svelte)
+- [Prettier Plugin Sort Imports](https://github.com/IanVS/prettier-plugin-sort-imports)
+- [Prettier Plugin Tailwind CSS](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
 
 ## Storage
 
--   [PocketBase](https://pocketbase.io)
--   [SQLite](https://www.sqlite.org)
+- [PocketBase](https://pocketbase.io)
+- [SQLite](https://www.sqlite.org)
 
 ## vsCode Extensions
 
@@ -87,27 +87,27 @@ pnpm create efs@latest
 
 These extensions are essential.
 
--   [PostCSS](https://marketplace.visualstudio.com/items?itemName=csstools.postcss)
--   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
--   [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
--   [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+- [PostCSS](https://marketplace.visualstudio.com/items?itemName=csstools.postcss)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+- [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 ### General
 
 These extensions are useful.
 
--   [Auto Comment Blocks](https://marketplace.visualstudio.com/items?itemName=kevinkyang.auto-comment-blocks)
--   [Bearded Icons](https://marketplace.visualstudio.com/items?itemName=BeardedBear.beardedicons)
--   [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
--   [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
--   [JSDoc Markdown Highlighting](https://marketplace.visualstudio.com/items?itemName=bierner.jsdoc-markdown-highlighting)
--   [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
--   [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
--   [Pretty TypeScript Errors](https://marketplace.visualstudio.com/items?itemName=yoavbls.pretty-ts-errors)
--   [Select Line Status Bar](https://marketplace.visualstudio.com/items?itemName=tomoki1207.selectline-statusbar)
--   [Supermaven](https://marketplace.visualstudio.com/items?itemName=supermaven.supermaven)
--   [Text Transformer](https://marketplace.visualstudio.com/items?itemName=jackytsu.text-transformer)
--   [Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)
+- [Auto Comment Blocks](https://marketplace.visualstudio.com/items?itemName=kevinkyang.auto-comment-blocks)
+- [Bearded Icons](https://marketplace.visualstudio.com/items?itemName=BeardedBear.beardedicons)
+- [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
+- [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
+- [JSDoc Markdown Highlighting](https://marketplace.visualstudio.com/items?itemName=bierner.jsdoc-markdown-highlighting)
+- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
+- [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
+- [Pretty TypeScript Errors](https://marketplace.visualstudio.com/items?itemName=yoavbls.pretty-ts-errors)
+- [Select Line Status Bar](https://marketplace.visualstudio.com/items?itemName=tomoki1207.selectline-statusbar)
+- [Supermaven](https://marketplace.visualstudio.com/items?itemName=supermaven.supermaven)
+- [Text Transformer](https://marketplace.visualstudio.com/items?itemName=jackytsu.text-transformer)
+- [Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)
 
 ## vsCode Config
 
