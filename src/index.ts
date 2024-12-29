@@ -406,9 +406,6 @@ try {
         commands.push(`pnpm add -D ${pnpmDevDeps.join(" ")}`)
     }
 
-    // Building the initial styles for the `src/error.html` file.
-    commands.push("pnpm error.html.css")
-
     await exec(commands.join(" && "))
 
     spinner.stop("Installed dependencies.")
