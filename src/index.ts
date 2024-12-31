@@ -382,7 +382,7 @@ try {
 
     const pnpmDevDeps = []
 
-    const commands = [`cd ${clientCwd}`, "pnpm up"]
+    const commands = [`cd ${clientCwd}`]
 
     if (prompts.db) {
         pnpmDevDeps.push("pocketbase", "pocketbase-types")
@@ -405,6 +405,8 @@ try {
     if (pnpmDevDeps.length) {
         commands.push(`pnpm add -D ${pnpmDevDeps.join(" ")}`)
     }
+
+    commands.push("pnpm up")
 
     await exec(commands.join(" && "))
 
