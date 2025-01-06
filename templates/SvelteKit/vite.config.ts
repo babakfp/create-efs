@@ -5,6 +5,9 @@ import { defineConfig, type Plugin } from "vite"
 
 export default defineConfig({
     plugins: [sveltekit(), errorCss()],
+    define: {
+        NODE_ENV: "production",
+    },
 })
 
 function errorCss(): Plugin {
