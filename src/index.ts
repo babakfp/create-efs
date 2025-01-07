@@ -403,7 +403,7 @@ try {
     }
 
     if (pnpmDevDeps.length) {
-        commands.push(`pnpm add -D ${pnpmDevDeps.join(" ")}`)
+        commands.push(`pnpm add --prefer-offline -D ${pnpmDevDeps.join(" ")}`)
     }
 
     commands.push("pnpm up")
@@ -445,7 +445,9 @@ if (prompts.markdown) {
         `MDX Svelte: ${color.blue("https://npmjs.com/package/mdx-svelte")}`,
     )
     learnNotes.push(
-        `MDX Collections Svelte: ${color.blue("https://npmjs.com/package/mdx-collections-svelte")}`,
+        `MDX Collections Svelte: ${color.blue(
+            "https://npmjs.com/package/mdx-collections-svelte",
+        )}`,
     )
 }
 
@@ -461,7 +463,13 @@ if (learnNotes.length) {
 
 prompter.note(
     [
-        `${isVsCodeTerminal() ? `${color.yellow("code")} ${color.gray("-r")} ${prompts.namePath}` : `${color.yellow("cd")} ${prompts.namePath}}`}`,
+        `${
+            isVsCodeTerminal()
+                ? `${color.yellow("code")} ${color.gray(
+                      "-r",
+                  )} ${prompts.namePath}`
+                : `${color.yellow("cd")} ${prompts.namePath}}`
+        }`,
         `${color.yellow("pnpm")} dev`,
     ]
         .map((note, i) => `${color.gray(`${i + 1}.`)} ${note}`)
