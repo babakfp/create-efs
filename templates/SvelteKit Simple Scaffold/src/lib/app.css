@@ -20,13 +20,9 @@
 
     --radius: var(--radius-lg);
 
-    --font-sans: "Recursive";
-    --font-mono: "Recursive";
+    --font-sans: "Jost Variable";
+    --font-mono: "JetBrains Mono Variable";
     --font-mono--font-feature-settings: "'MONO' 1";
-
-    --font-weight-thin: initial;
-    --font-weight-extralight: initial;
-    --font-weight-extrablack: 1000;
 }
 
 @utility container {
