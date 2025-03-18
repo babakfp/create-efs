@@ -87,7 +87,6 @@ pnpm create efs@latest
 
 These extensions are essential.
 
-- [PostCSS](https://marketplace.visualstudio.com/items?itemName=csstools.postcss)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
 - [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)

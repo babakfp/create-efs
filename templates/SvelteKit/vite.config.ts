@@ -1,10 +1,11 @@
 import { exec } from "child_process"
 import { join } from "node:path"
 import { sveltekit } from "@sveltejs/kit/vite"
+import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, type Plugin } from "vite"
 
 export default defineConfig({
-    plugins: [sveltekit(), errorCss()],
+    plugins: [tailwindcss(), sveltekit(), errorCss()],
 })
 
 function errorCss(): Plugin {
