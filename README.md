@@ -91,22 +91,22 @@ These extensions are essential.
 - [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
 - [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
-### General
-
 These extensions are useful.
 
-- [Auto Comment Blocks](https://marketplace.visualstudio.com/items?itemName=kevinkyang.auto-comment-blocks)
+- [Svelte Snippets](https://marketplace.visualstudio.com/items?itemName=fivethree.vscode-svelte-snippets)
+- [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
+
+### General
+
 - [Bearded Icons](https://marketplace.visualstudio.com/items?itemName=BeardedBear.beardedicons)
 - [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
-- [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
 - [JSDoc Markdown Highlighting](https://marketplace.visualstudio.com/items?itemName=bierner.jsdoc-markdown-highlighting)
-- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
-- [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
+- [Open File](https://marketplace.visualstudio.com/items?itemName=Fr43nk.seito-openfile)
+- [Open Folder in Explorer](https://marketplace.visualstudio.com/items?itemName=adrianwilczynski.open-folder-in-explorer)
+- [Peek Hidden Files](https://marketplace.visualstudio.com/items?itemName=adrianwilczynski.toggle-hidden)
 - [Pretty TypeScript Errors](https://marketplace.visualstudio.com/items?itemName=yoavbls.pretty-ts-errors)
 - [Select Line Status Bar](https://marketplace.visualstudio.com/items?itemName=tomoki1207.selectline-statusbar)
-- [Supermaven](https://marketplace.visualstudio.com/items?itemName=supermaven.supermaven)
 - [Text Transformer](https://marketplace.visualstudio.com/items?itemName=jackytsu.text-transformer)
-- [Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)
 
 ## vsCode Config
 
@@ -137,6 +137,8 @@ These extensions are useful.
     // Extension: [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
     "prettier.semi": false, // Keep code clean by removing semicolons.
     "prettier.tabWidth": 4, // Improve readability.
+    "experimentalOperatorPosition": "start",
+    "experimentalTernaries": true,
 
     // Extension: [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
     "inlineFold.maskChar": "...",
@@ -150,10 +152,10 @@ These extensions are useful.
     // Extension: [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
     "tailwindCSS.colorDecorators": false, // Because they don't get folded.
     "tailwindCSS.emmetCompletions": true,
+    "files.associations": {
+        "*.css": "tailwindcss"
+    }
 
-    // Extension: [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
-    "path-intellisense.extensionOnImport": true,
-    "path-intellisense.autoTriggerNextSuggestion": true,
-    "path-intellisense.autoSlashAfterDirectory": true,
+    // https://github.com/antfu/vscode-file-nesting-config
 }
 ```
