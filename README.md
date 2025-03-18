@@ -153,8 +153,8 @@ These extensions are useful.
     "tailwindCSS.colorDecorators": false, // Because they don't get folded.
     "tailwindCSS.emmetCompletions": true,
     "files.associations": {
-        "*.css": "tailwindcss"
-    }
+        "*.css": "tailwindcss",
+    },
 
     // https://github.com/antfu/vscode-file-nesting-config
 }

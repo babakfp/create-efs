@@ -322,8 +322,8 @@ if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
         const replaceWith: string[] = []
 
         if (
-            prompts.svelteAdapter === "@sveltejs/adapter-node" ||
-            prompts.svelteAdapter === "@sveltejs/adapter-static"
+            prompts.svelteAdapter === "@sveltejs/adapter-node"
+            || prompts.svelteAdapter === "@sveltejs/adapter-static"
         ) {
             replaceWith.push("/build/")
         } else if (prompts.svelteAdapter === "@sveltejs/adapter-vercel") {
@@ -464,11 +464,11 @@ if (learnNotes.length) {
 prompter.note(
     [
         `${
-            isVsCodeTerminal()
-                ? `${color.yellow("code")} ${color.gray(
-                      "-r",
-                  )} ${prompts.namePath}`
-                : `${color.yellow("cd")} ${prompts.namePath}}`
+            isVsCodeTerminal() ?
+                `${color.yellow("code")} ${color.gray(
+                    "-r",
+                )} ${prompts.namePath}`
+            :   `${color.yellow("cd")} ${prompts.namePath}}`
         }`,
         `${color.yellow("pnpm")} dev`,
     ]
