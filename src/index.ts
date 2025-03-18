@@ -464,7 +464,8 @@ if (learnNotes.length) {
 prompter.note(
     [
         `${
-            isVsCodeTerminal() ?
+            appCwd === process.cwd() ? ""
+            : isVsCodeTerminal() ?
                 `${color.yellow("code")} ${color.gray(
                     "-r",
                 )} ${prompts.namePath}`
