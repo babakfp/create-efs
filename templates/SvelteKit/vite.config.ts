@@ -11,12 +11,12 @@ export default defineConfig({
 function errorCss(): Plugin {
     const i = join("src", "lib", "app.css")
     const o = join("static", "error.css")
-    const content = join("src", "error.html")
+    const command = `tailwindcss -i ${i} -o ${o} -m`
 
     return {
         name: "vite-plugin-svelte-error.html-tailwind-css",
         configureServer(server) {
-            exec(`tailwindcss -i ${i} -o ${o} -m`)
+            exec(command)
             server.watcher.add(o)
             server.watcher.on("change", (path) => {
                 if (path === o) {
@@ -25,7 +25,7 @@ function errorCss(): Plugin {
             })
         },
         buildStart() {
-            exec(`tailwindcss -i ${i} -o ${o} -m`)
+            exec(command)
         },
     }
 }
