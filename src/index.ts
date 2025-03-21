@@ -338,15 +338,6 @@ if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
 
 if (prompts.scaffold) {
     await copyFile(
-        join(
-            cmd,
-            "templates",
-            "SvelteKit Simple Scaffold",
-            "tailwind.config.ts",
-        ),
-        join(clientCwd, "tailwind.config.ts"),
-    )
-    await copyFile(
         join(cmd, "templates", "SvelteKit Simple Scaffold", "src", "app.html"),
         join(clientCwd, "src", "app.html"),
     )
