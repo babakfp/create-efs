@@ -16,7 +16,7 @@ function errorCss(): Plugin {
     return {
         name: "vite-plugin-svelte-error.html-tailwind-css",
         configureServer(server) {
-            exec(`tailwindcss -i ${i} -o ${o} --content ${content} -m -w`)
+            exec(`tailwindcss -i ${i} -o ${o} -m`)
             server.watcher.add(o)
             server.watcher.on("change", (path) => {
                 if (path === o) {
@@ -25,7 +25,7 @@ function errorCss(): Plugin {
             })
         },
         buildStart() {
-            exec(`tailwindcss -i ${i} -o ${o} --content ${content} -m`)
+            exec(`tailwindcss -i ${i} -o ${o} -m`)
         },
     }
 }
