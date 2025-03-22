@@ -26,11 +26,11 @@
 }
 
 @utility container {
-    @apply mx-auto px-4 max-w-screen-xl;
+    @apply mx-auto max-w-screen-xl px-4;
 }
 
 @layer base {
     * {
-        @apply outline-none drag-none;
+        @apply drag-none outline-none;
     }
 }
