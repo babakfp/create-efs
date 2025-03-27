@@ -5,16 +5,16 @@ import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, type Plugin } from "vite"
 
 export default defineConfig({
-    plugins: [tailwindcss(), sveltekit(), errorCss()],
+    plugins: [tailwindcss(), sveltekit(), errorDotHTML()],
 })
 
-function errorCss(): Plugin {
+function errorDotHTML(): Plugin {
     const i = join("src", "lib", "app.css")
     const o = join("static", "error.css")
     const command = `tailwindcss -i ${i} -o ${o} -m`
 
     return {
-        name: "vite-plugin-svelte-error.html-tailwind-css",
+        name: "vite-plugin-sveltekit-error-dot-html-tailwindcss",
         configureServer(server) {
             exec(command)
             server.watcher.add(o)
