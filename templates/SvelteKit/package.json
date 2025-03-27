@@ -33,5 +33,6 @@
             "esbuild"
         ]
     },
-    "type": "module"
+    "type": "module",
+    "private": true
 }
