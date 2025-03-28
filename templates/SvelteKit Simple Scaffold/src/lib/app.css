@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tailwindcss-addons";
 
-@theme inline {
+@theme {
     --color-zinc-*: initial;
     --color-slate-*: initial;
     --color-stone-*: initial;
