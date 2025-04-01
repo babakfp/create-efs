@@ -452,18 +452,20 @@ if (learningNotes.length) {
     )
 }
 
+const nextStepNotes = []
+
+if (appCwd !== process.cwd()) {
+    nextStepNotes.push(
+        isVsCodeTerminal() ?
+            `${color.yellow("code")} ${color.gray("-r")} ${prompts.namePath}`
+        :   `${color.yellow("cd")} ${prompts.namePath}`,
+    )
+}
+
+nextStepNotes.push(`${color.yellow("pnpm")} dev`)
+
 prompter.note(
-    [
-        `${
-            appCwd === process.cwd() ? ""
-            : isVsCodeTerminal() ?
-                `${color.yellow("code")} ${color.gray(
-                    "-r",
-                )} ${prompts.namePath}`
-            :   `${color.yellow("cd")} ${prompts.namePath}}`
-        }`,
-        `${color.yellow("pnpm")} dev`,
-    ]
+    nextStepNotes
         .map((note, i) => `${color.gray(`${i + 1}.`)} ${note}`)
         .map((note) => (note += "  "))
         .join("\n"),
