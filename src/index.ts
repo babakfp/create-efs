@@ -429,22 +429,22 @@ if (prompts.git) {
     }
 }
 
-const learnNotes = []
+const learningNotes = []
 
 if (prompts.markdown) {
-    learnNotes.push(
+    learningNotes.push(
         `MDX Svelte: ${color.blue("https://npmjs.com/package/mdx-svelte")}`,
     )
-    learnNotes.push(
+    learningNotes.push(
         `MDX Collections Svelte: ${color.blue(
             "https://npmjs.com/package/mdx-collections-svelte",
         )}`,
     )
 }
 
-if (learnNotes.length) {
+if (learningNotes.length) {
     prompter.note(
-        learnNotes
+        learningNotes
             .map((note) => `${color.gray("-")} ${note}`)
             .map((note) => (note += "  "))
             .join("\n"),
