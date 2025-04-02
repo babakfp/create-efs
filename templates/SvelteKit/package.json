@@ -28,11 +28,7 @@
         "typescript": "5.8.2",
         "vite": "6.2.3"
     },
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "esbuild"
-        ]
-    },
+    "packageManager": "pnpm@9.15.9",
     "type": "module",
     "private": true
 }
