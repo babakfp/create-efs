@@ -427,7 +427,7 @@ if (prompts.git) {
                 `cd ${clientCwd}`,
                 "git init",
                 "git add .",
-                'git commit -m "First commit"',
+                'git commit -m "."',
             ].join(" && "),
         )
 
