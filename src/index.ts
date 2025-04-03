@@ -334,6 +334,15 @@ if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
 
         return appendLines(content, "/.svelte-kit/", replaceWith)
     })
+
+    // ---
+
+    if (prompts.svelteAdapter === "@sveltejs/adapter-static") {
+        await writeFile(
+            join(clientCwd, "/src/routes/+layout.ts"),
+            "export const prerender = true\n",
+        )
+    }
 }
 
 if (prompts.scaffold) {
