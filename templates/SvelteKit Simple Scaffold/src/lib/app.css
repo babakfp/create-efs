@@ -19,8 +19,8 @@
     --color-gray-900: oklch(0.205 0 0); /* --color-neutral-900 */
     --color-gray-950: oklch(0.145 0 0); /* --color-neutral-950 */
 
-    --color-background: var(--color-gray-900);
-    --color-foreground: var(--color-gray-100);
+    --color-background: oklch(0.205 0 0); /* --color-neutral-900 */
+    --color-foreground: oklch(0.97 0 0); /* --color-neutral-100 */
 
     --radius-lg: initial;
     --radius: 0.5rem; /* --radius-lg */
