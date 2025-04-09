@@ -2,7 +2,7 @@
 export default {
     semi: false,
     tabWidth: 4,
-    experimentalOperatorPosition: "start",
     experimentalTernaries: true,
+    experimentalOperatorPosition: "start",
     plugins: ["@ianvs/prettier-plugin-sort-imports"],
 }

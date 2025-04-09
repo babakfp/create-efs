@@ -137,8 +137,8 @@ These extensions are useful.
     // Extension: [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
     "prettier.semi": false, // Keep code clean by removing semicolons.
     "prettier.tabWidth": 4, // Improve readability.
-    "experimentalOperatorPosition": "start",
     "experimentalTernaries": true,
+    "experimentalOperatorPosition": "start",
 
     // Extension: [Inline Fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
     "inlineFold.maskChar": "...",
