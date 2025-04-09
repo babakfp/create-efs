@@ -2,6 +2,8 @@
 @import "tailwindcss-addons";
 
 @theme {
+    --color-black: initial;
+    --color-white: initial;
     --color-zinc-*: initial;
     --color-slate-*: initial;
     --color-stone-*: initial;
