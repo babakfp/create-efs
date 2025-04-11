@@ -17,7 +17,7 @@ import {
     writeFile,
     type ExecException,
 } from "./helpers/node/index.js"
-import { appendLines } from "./utilities/appendLines.js"
+import { appendLines, prependLines } from "./utilities/appendLines.js"
 import { fetchPbLatestReleaseAssets } from "./utilities/fetchPbLatestReleaseAssets.js"
 import { isVsCodeTerminal } from "./utilities/isVsCodeTerminal.js"
 import { createPrompter } from "./utilities/prompter.js"
@@ -188,6 +188,12 @@ await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd)
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
 await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
+
+if (process.platform === "darwin") {
+    await editFile(join(clientCwd, ".gitignore"), (content) =>
+        prependLines(content, "/node_modules/", [".DS_Store"]),
+    )
+}
 
 if (prompts.db || (!prompts.db && prompts.env)) {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
