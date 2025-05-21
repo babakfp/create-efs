@@ -1,7 +1,7 @@
 {
     "name": "create-efs",
     "description": "A CLI tool to create SvelteKit apps.",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "license": "MIT",
     "scripts": {
         "dev": "rimraf dist && tsc -w",
