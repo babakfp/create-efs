@@ -7,4 +7,8 @@ export default {
         adapter: adapter(),
     },
     preprocess: vitePreprocess(),
+    compilerOptions: {
+        discloseVersion: false,
+        modernAst: true,
+    },
 }
