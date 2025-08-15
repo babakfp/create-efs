@@ -1,6 +1,4 @@
-import { type Config } from "prettier"
-import { type PluginConfig } from "prettier-plugin-svelte"
-
+/** @type {import("prettier").Config & import("prettier-plugin-svelte").PluginConfig} */
 export default {
     semi: false,
     tabWidth: 4,
@@ -19,4 +17,4 @@ export default {
         "^\\$lib/",
         "^[.]",
     ],
-} satisfies Config & PluginConfig
+}
