@@ -1,2 +1,7 @@
 /node_modules/
 /dist/
+
+/templates/SvelteKit/node_modules/
+/templates/SvelteKit/.svelte-kit/
+/templates/SvelteKit/static/error.css
+/templates/SvelteKit/vite.config.*.timestamp-*

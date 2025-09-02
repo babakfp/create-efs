@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "rimraf dist && tsc -w",
         "build": "rimraf dist && tsc",
-        "prepublishOnly": "rimraf dist && tsc",
+        "prepublishOnly": "rimraf -g templates/SvelteKit/{node_modules,.svelte-kit,static/error.css,vite.config.*.timestamp-*} && tsc",
         "format": "prettier -w ."
     },
     "dependencies": {
