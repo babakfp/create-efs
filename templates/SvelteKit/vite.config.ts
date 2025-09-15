@@ -20,7 +20,7 @@ function errorDotHTML(): Plugin {
 
     return {
         name: "vite-plugin-use-tailwindcss-for-sveltekit-error-dot-html",
-        configureServer(server) {
+        configureServer: (server) => {
             server.watcher.on("change", (path) => {
                 if (path !== e) return
                 buildStyles(i, o, () => {
@@ -28,7 +28,7 @@ function errorDotHTML(): Plugin {
                 })
             })
         },
-        buildStart() {
+        buildStart: () => {
             buildStyles(i, o)
         },
     }
