@@ -24,7 +24,7 @@
         "tailwindcss": "4.1.16",
         "tailwindcss-addons": "4.2.0",
         "typescript": "5.9.3",
-        "vite": "7.1.12"
+        "vite": "7.3.2"
     },
     "pnpm": {
         "neverBuiltDependencies": []
