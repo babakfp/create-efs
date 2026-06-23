@@ -1,10 +1,8 @@
 import * as p from "@clack/prompts"
 
-type RadioOptions = {
+type RadioOptions = (Omit<p.Option<string>, "label"> & {
     label: string
-    value: string
-    hint?: string
-}[]
+})[]
 
 export const createPrompter = async () => {
     const DEFAULT_CANCEL_MESSAGE = "Cancelled."
