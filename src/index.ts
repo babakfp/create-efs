@@ -1,6 +1,6 @@
+import { styleText } from "node:util"
 import { spinner as createSpinner } from "@clack/prompts"
 import { Downloader } from "nodejs-file-downloader"
-import color from "picocolors"
 import {
     copyDir,
     copyFile,
@@ -56,7 +56,7 @@ const prompter = await createPrompter()
 const spinner = createSpinner()
 
 prompter.intro(
-    `${color.bgCyan(color.black(` Easy Full Stack `))}  v${version}`,
+    `${styleText(["bgCyan", "black"], ` Easy Full Stack `)}  v${version}`,
     true,
 )
 
@@ -443,19 +443,17 @@ const learningNotes = []
 
 if (prompts.markdown) {
     learningNotes.push(
-        `MDX Svelte: ${color.blue("https://npmjs.com/package/mdx-svelte")}`,
+        `MDX Svelte: ${styleText("blue", "https://npmjs.com/package/mdx-svelte")}`,
     )
     learningNotes.push(
-        `MDX Collections Svelte: ${color.blue(
-            "https://npmjs.com/package/mdx-collections-svelte",
-        )}`,
+        `MDX Collections Svelte: ${styleText("blue", "https://npmjs.com/package/mdx-collections-svelte")}`,
     )
 }
 
 if (learningNotes.length) {
     prompter.note(
         learningNotes
-            .map((note) => `${color.gray("-")} ${note}`)
+            .map((note) => `${styleText("gray", "-")} ${note}`)
             .map((note) => (note += "  "))
             .join("\n"),
         "Learn",
@@ -467,16 +465,16 @@ const nextStepNotes = []
 if (appCwd !== process.cwd()) {
     nextStepNotes.push(
         isVsCodeTerminal() ?
-            `${color.yellow("code")} ${color.gray("-r")} ${prompts.namePath}`
-        :   `${color.yellow("cd")} ${prompts.namePath}`,
+            `${styleText("yellow", "code")} ${styleText("gray", "-r")} ${prompts.namePath}`
+        :   `${styleText("yellow", "cd")} ${prompts.namePath}`,
     )
 }
 
-nextStepNotes.push(`${color.yellow("pnpm")} dev`)
+nextStepNotes.push(`${styleText("yellow", "pnpm")} dev`)
 
 prompter.note(
     nextStepNotes
-        .map((note, i) => `${color.gray(`${i + 1}.`)} ${note}`)
+        .map((note, i) => `${styleText("gray", `${i + 1}.`)} ${note}`)
         .map((note) => (note += "  "))
         .join("\n"),
     "Next steps",
