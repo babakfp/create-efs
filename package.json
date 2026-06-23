@@ -39,5 +39,6 @@
         "template",
         "scaffold"
     ],
+    "packageManager": "pnpm@11.7.0",
     "type": "module"
 }

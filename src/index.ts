@@ -187,7 +187,6 @@ await copyDir(join(cmd, "templates", "SvelteKit"), clientCwd)
 
 // These files are prefix because they are ignored by the NPM registry. https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
 await rename(join(clientCwd, "..gitignore"), join(clientCwd, ".gitignore"))
-await rename(join(clientCwd, "..npmrc"), join(clientCwd, ".npmrc"))
 
 if (process.platform === "darwin") {
     await editFile(join(clientCwd, ".gitignore"), (content) =>
