@@ -16,7 +16,6 @@ import {
     rename,
     toPosix,
     writeFile,
-    type ExecException,
 } from "./helpers/node/index.js"
 import { appendLines, prependLines } from "./utilities/appendLines.js"
 import { fetchPbLatestReleaseAssets } from "./utilities/fetchPbLatestReleaseAssets.js"
