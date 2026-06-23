@@ -3,7 +3,7 @@
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
         "outDir": "dist",
-        "strict": true,
+        "rootDir": "src",
         "declaration": true
     },
     "include": ["./src/**/*"]
