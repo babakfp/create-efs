@@ -1,3 +1,4 @@
+import { spinner as createSpinner } from "@clack/prompts"
 import { Downloader } from "nodejs-file-downloader"
 import color from "picocolors"
 import {
@@ -21,7 +22,6 @@ import { appendLines, prependLines } from "./utilities/appendLines.js"
 import { fetchPbLatestReleaseAssets } from "./utilities/fetchPbLatestReleaseAssets.js"
 import { isVsCodeTerminal } from "./utilities/isVsCodeTerminal.js"
 import { createPrompter } from "./utilities/prompter.js"
-import { createSpinner } from "./utilities/spinner.js"
 import { unZip } from "./utilities/unZip.js"
 
 const isNode = !process.env.npm_config_user_agent
@@ -171,10 +171,7 @@ if (prompts.db) {
             })
         }
     } catch (e) {
-        spinner.stop(
-            "Couldn't fetch PocketBase release.",
-            (e as ExecException).code,
-        )
+        spinner.error("Couldn't fetch PocketBase release.")
         prompter.exit("Exited.")
     }
 }
@@ -265,7 +262,7 @@ if (prompts.db) {
 
         isDownloadSeccessful = true
     } catch {
-        spinner.stop("Couldn't download PocketBase.", 1)
+        spinner.error("Couldn't download PocketBase.")
         prompter.exit("Exited.")
     }
 
@@ -419,7 +416,7 @@ try {
 } catch (e) {
     await removeDir(appCwd)
 
-    spinner.stop("Couldn't install dependencies.", (e as ExecException).code)
+    spinner.error("Couldn't install dependencies.")
     prompter.exit("Exited.")
 }
 
@@ -438,7 +435,7 @@ if (prompts.git) {
 
         spinner.stop("Initialized Git.")
     } catch (e) {
-        spinner.stop("Couldn't initialize Git.", (e as ExecException).code)
+        spinner.error("Couldn't initialize Git.")
         prompter.exit("Exited.")
     }
 }
