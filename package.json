@@ -38,6 +38,6 @@
         "template",
         "scaffold"
     ],
-    "packageManager": "pnpm@11.8.0",
+    "packageManager": "pnpm@11.9.0",
     "type": "module"
 }
