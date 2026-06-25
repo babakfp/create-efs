@@ -3,5 +3,5 @@ packageLock: false
 preferOffline: true
 saveExact: true
 allowBuilds:
-  '@parcel/watcher': true
-  esbuild: true
+    "@parcel/watcher": true
+    esbuild: true

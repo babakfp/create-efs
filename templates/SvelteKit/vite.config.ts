@@ -11,7 +11,9 @@ export default defineConfig({
 function errorDotHTML(): Plugin {
     const buildStyles = (i: string, o: string, c?: () => void) => {
         const command = `tailwindcss -i ${i} -o ${o} -m`
-        child_process.exec(command, (error) => error ? console.log(error) : c?.())
+        child_process.exec(command, (error) =>
+            error ? console.log(error) : c?.(),
+        )
     }
 
     const i = path.join(process.cwd(), "src", "lib", "app.css")
