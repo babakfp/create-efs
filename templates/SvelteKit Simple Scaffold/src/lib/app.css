@@ -27,9 +27,8 @@
     --radius-lg: initial;
     --radius: 0.5rem; /* --radius-lg */
 
-    --font-sans: "Jost Variable";
-    --font-mono: "JetBrains Mono Variable";
-    --font-mono--font-variation-settings: "MONO" 1;
+    --font-sans: "Geist Variable";
+    --font-mono: "Geist Mono Variable";
 }
 
 @utility container {
@@ -37,6 +36,9 @@
 }
 
 @layer base {
+    :root {
+        font-synthesis: none;
+    }
     * {
         @apply drag-none [outline:transparent];
     }
