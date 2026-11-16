@@ -292,7 +292,7 @@ if (prompts.db) {
 
 // Markdown
 if (prompts.markdown) {
-    await editFile(join(clientCwd, "svelte.config.js"), (content) => {
+    await editFile(join(clientCwd, "vite.config.ts"), (content) => {
         content = appendLines(
             content,
             `import { vitePreprocess } from "@sveltejs/vite-plugin-svelte"`,
@@ -313,7 +313,7 @@ if (prompts.markdown) {
 // ---
 
 if (prompts.svelteAdapter !== SVELTE_ADAPTERS.Auto) {
-    await editFile(join(clientCwd, "svelte.config.js"), (content) =>
+    await editFile(join(clientCwd, "vite.config.ts"), (content) =>
         content.replace(SVELTE_ADAPTERS.Auto, prompts.svelteAdapter),
     )
 
