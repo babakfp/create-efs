@@ -5,3 +5,4 @@
 /templates/SvelteKit/.svelte-kit/
 /templates/SvelteKit/static/error.css
 /templates/SvelteKit/vite.config.*.timestamp-*
+/templates/SvelteKit/pnpm-lock.yaml
