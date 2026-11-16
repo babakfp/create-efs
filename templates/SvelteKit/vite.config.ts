@@ -1,16 +1,27 @@
 import child_process from "node:child_process"
 import path from "node:path"
+import adapter from "@sveltejs/adapter-auto"
 import { sveltekit } from "@sveltejs/kit/vite"
+import { vitePreprocess } from "@sveltejs/vite-plugin-svelte"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, type Plugin } from "vite"
 
 export default defineConfig({
-    plugins: [tailwindcss(), sveltekit(), errorDotHTML()],
+    plugins: [
+        tailwindcss(),
+        sveltekit({
+            preprocess: vitePreprocess(),
+            compilerOptions: { discloseVersion: false, modernAst: true },
+            adapter: adapter(),
+        }),
+        errorDotHTML(),
+    ],
 })
 
 function errorDotHTML(): Plugin {
     const buildStyles = (i: string, o: string, c?: () => void) => {
         const command = `tailwindcss -i ${i} -o ${o} -m`
+
         child_process.exec(command, (error) =>
             error ? console.log(error) : c?.(),
         )
