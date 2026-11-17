@@ -1,4 +1,2 @@
 engineStrict: true
-packageLock: false
 preferOffline: true
-saveExact: true

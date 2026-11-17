@@ -1,6 +1,5 @@
 engineStrict: true
 preferOffline: true
-saveExact: true
 allowBuilds:
     "@parcel/watcher": true
     esbuild: true
